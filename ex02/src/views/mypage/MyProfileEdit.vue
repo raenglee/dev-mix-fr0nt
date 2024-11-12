@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
+import { ref, watchEffect, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/store/userStore';
 import { loginUsers, uploadprofile, checkNickname } from '@/api/loginApi';
 import { useRouter } from 'vue-router';
@@ -134,6 +134,7 @@ const roleOptions = ref([]); // 서버에서 전달 받은 포지션 저장
 const userProfile = ref(null);
 
 const isDropdownOpen = ref(false); // 드롭다운 열림 상태
+const availableTechOptions = ref([]);
 
 // 사용자 정보 API 호출
 const loadUserProfile = async () => {
@@ -142,12 +143,27 @@ const loadUserProfile = async () => {
     userProfile.value = profile.result; // API에서 받은 데이터를 userProfile에 저장
     console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
 
+    // 원래 있는 기술 넣기
     const updatedTechStacks = userProfile.value.techStacks.map(({ techStackName, techStackImageUrl }) => ({
       techStackName,
       imageUrl: techStackImageUrl
     }));
 
+    // 원래 있는 포지션 넣기
+    profile.result.positions.forEach((temp)=>{
+      positionList.value.push(temp.positionName);
+    });
+    
     selectedSkills.value = updatedTechStacks;
+
+    const excludedTechStacks = [];
+    profile.result.techStacks.map((techStacks)=>{
+      excludedTechStacks.push(techStacks.techStackName);
+    });
+    const filteredTechStacks = availableTechOptions.value.filter(
+        stack => !excludedTechStacks.includes(stack.techStackName)
+    );
+    availableTechOptions.value = filteredTechStacks;
   } catch (error) {
     console.error('프로필 정보를 불러오는 데 실패했습니다.', error);
   }
@@ -175,14 +191,6 @@ watchEffect(() => {
     profileImage.value = useStore.profileImage;
   }
 });
-
-const selectPosition = () => {
-  positionList.value.push('positionName');
-};
-
-const selectTechStac = () => {
-  techStackList.value.push('positionName');
-};
 
 // 사용자가 입력한 데이터 저장
 const handleSubmit = async () => {
@@ -268,20 +276,21 @@ const updateTechstacks = async () => {
     } else {
       console.error('기술/언어 배열 저장 에러', res);
     }
+    availableTechOptions.value = techOptions.value;
   } catch (error) {
     console.error('실패:', error);
   }
 };
 
-// 선택된 기술을 제외한 선택 가능한 기술목록
-const availableTechOptions = computed(() => {
-  return techOptions.value.filter((tech) => !selectedSkills.value.includes(tech));
-});
-
 // 기술 선택
 const selectSkill = (tech) => {
   if (!selectedSkills.value.includes(tech)) {
+    console.log(tech);
     selectedSkills.value.push(tech);
+    const indexToRemove = availableTechOptions.value.indexOf(tech); // "b"의 인덱스를 찾음
+    if (indexToRemove !== -1) {
+      availableTechOptions.value.splice(indexToRemove, 1); // 인덱스 위치에서 1개 요소 삭제
+    }
   }
 
   // 선택 후 남은 기술이 없으면 드롭다운 닫기
@@ -337,11 +346,13 @@ const handleClickOutside = (event) => {
 };
 
 watchEffect(() => {
-  loadUserProfile();
 
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출
   updateLocations(); // 지역 API 호출
+
+  loadUserProfile();
+
   document.addEventListener('mousedown', handleClickOutside);
 });
 

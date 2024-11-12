@@ -229,7 +229,13 @@ const toggleDropdown = () => {
 // 기술 선택
 const selectSkill = (tech) => {
   if (!selectedSkills.value.includes(tech) && selectedSkills.value.length < 10) {
+    if (!selectedSkills.value.includes(tech)) {
     selectedSkills.value.push(tech);
+    const indexToRemove = availableTechOptions.value.indexOf(tech); // "b"의 인덱스를 찾음
+    if (indexToRemove !== -1) {
+      availableTechOptions.value.splice(indexToRemove, 1); // 인덱스 위치에서 1개 요소 삭제
+    }
+  }
   }
   if (availableTechOptions.value.length === 0) {
     isDropdownOpen.value = false;
