@@ -50,16 +50,19 @@
           </div>
           <div class="border border-gray-200 rounded-lg min-w-[450px]">
             <div class="p-3">
-              <div v-for="positionName in roleOptions" :key="positionName" class="flex wrap gap-2">
-                <input
-                  type="checkbox"
-                  :value="positionName.positionName"
-                  :id="positionName.positionName"
-                  @change="positionList.push(positionName.positionName)"
-                  class="cursor-pointer form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500"
-                />
-                <label class="cursor-pointer" :for="positionName.positionName">{{ positionName.positionName }}</label>
-              </div>
+              <template v-if="userProfile">
+                <div v-for="positionName in roleOptions" :key="positionName" class="flex wrap gap-2">
+                  <input
+                    :checked="userProfile.positions.some((pos) => pos.positionName === positionName.positionName)"
+                    type="checkbox"
+                    :value="positionName.positionName"
+                    :id="positionName.positionName"
+                    @change="positionList.push(positionName.positionName)"
+                    class="cursor-pointer form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500"
+                  />
+                  <label class="cursor-pointer" :for="positionName.positionName">{{ positionName.positionName }}</label>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -105,7 +108,7 @@
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { useUserStore } from '@/store/userStore';
-import { loginUsers, uploadprofile, checkNickname, deleteUser } from '@/api/loginApi';
+import { loginUsers, uploadprofile, checkNickname } from '@/api/loginApi';
 import { useRouter } from 'vue-router';
 import { getPositions, getTechstacks, getLocation } from '@/api/projectApi';
 
@@ -128,8 +131,27 @@ const techOptions = ref([]); // 서버에서 전달 받은 기술 저장
 //🚹 분야별 모집 인원 관련 scripts
 const positions = ref([{ role: '', count: 1 }]); // 포지션 관리
 const roleOptions = ref([]); // 서버에서 전달 받은 포지션 저장
+const userProfile = ref(null);
 
 const isDropdownOpen = ref(false); // 드롭다운 열림 상태
+
+// 사용자 정보 API 호출
+const loadUserProfile = async () => {
+  try {
+    const profile = await loginUsers(); // API로부터 사용자 프로필 정보 가져오기
+    userProfile.value = profile.result; // API에서 받은 데이터를 userProfile에 저장
+    console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
+
+    const updatedTechStacks = userProfile.value.techStacks.map(({ techStackName, techStackImageUrl }) => ({
+      techStackName,
+      imageUrl: techStackImageUrl
+    }));
+
+    selectedSkills.value = updatedTechStacks;
+  } catch (error) {
+    console.error('프로필 정보를 불러오는 데 실패했습니다.', error);
+  }
+};
 
 // 프로필 이미지를 선택하는 핸들러
 const onFileChange = (event) => {
@@ -194,7 +216,7 @@ const handleSubmit = async () => {
         .then((response) => response.blob())
         .then((blob) => {
           const file = new File([blob], 'profileImage.png', { type: blob.type });
-          formData.append('profileImage', file , "aaa.png");
+          formData.append('profileImage', file, 'aaa.png');
         })
         .catch((error) => console.error('Error fetching image:', error));
     }
@@ -315,6 +337,8 @@ const handleClickOutside = (event) => {
 };
 
 watchEffect(() => {
+  loadUserProfile();
+
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출
   updateLocations(); // 지역 API 호출
