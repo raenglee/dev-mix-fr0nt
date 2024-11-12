@@ -285,7 +285,6 @@ const updateTechstacks = async () => {
 // 기술 선택
 const selectSkill = (tech) => {
   if (!selectedSkills.value.includes(tech)) {
-    console.log(tech);
     selectedSkills.value.push(tech);
     const indexToRemove = availableTechOptions.value.indexOf(tech); // "b"의 인덱스를 찾음
     if (indexToRemove !== -1) {
