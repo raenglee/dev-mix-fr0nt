@@ -88,10 +88,10 @@ const selelctTechstacks = async () => {
     // console.log('updateTechstacks 데이터 확인: ', res);
     // techOptions.value = res.result;
     if (Array.isArray(res.data.result)) {
-      techOptions.value = res.data.result.map((item) => ({
-        techStackName: item.techStackName,
-        imageUrl: item.imageUrl
-      }));
+      // techOptions.value = res.data.result.map((item) => ({
+      //   techStackName: item.techStackName,
+      //   imageUrl: item.imageUrl
+      // }));
     } else {
       console.error('기술/언어 배열 저장 에러', res);
     }
