@@ -27,7 +27,7 @@ export const loginUsers = async () => {
 
 export const uploadprofile = async (formData) => {
   try {
-    const res = await axios.put(`${url}/api/v1/users/profile`,formData , {
+    const res = await axios.put(`${url}/api/v1/users/profile`, formData , {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -35,6 +35,22 @@ export const uploadprofile = async (formData) => {
     });
         // localStorage.setItem('email',res.email);
 
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+
+export const checkNickname = async (nickname) => {
+  try {
+    const res = await axios.post(`${url}/api/v1/users/nickname-check` ,nickname, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
     console.log(res.data);
     return res.data;
   } catch (err) {

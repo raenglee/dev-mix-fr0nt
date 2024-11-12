@@ -177,11 +177,10 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue';
 import { FontAwesomeIcon } from '@/assets/FontAwesome';
-import { getPositions, getTechstacks, getLocation, getProjectView, updateProject } from '@/api/projectApi';
-import { useRoute, useRouter } from 'vue-router';
+import { getPositions, saveProject, getTechstacks, getLocation } from '@/api/projectApi';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
 const isDropdownOpen = ref(false); // 드롭다운 닫힌(false) 상태
 
 // 🌍지역 / 구분 선택 관련 scripts
@@ -353,48 +352,13 @@ const location = ref('');
 const project_period = ref('');
 const recruit_end_date = ref('');
 
-const boardId = route.params.board_id;
-
-// 게시글 정보 가져오기
-const getProjectData = async () => {
-  try {
-    const res = await getProjectView(boardId); // 게시글 정보를 API에서 가져오기
-    console.log(res.data.result);
-    const project = res.data.result;
-
-    // 가져온 데이터로 초기화
-    title.value = project.title;
-    content.value = project.content;
-    location.value = project.location;
-    project_period.value = project.projectPeriod;
-    recruit_end_date.value = project.endDate;
-
-    // 기술 스택 설정
-    selectedSkills.value = project.techStackDtoList.map((skill) => ({
-      techStackName: skill.techStackName,
-      imageUrl: skill.imageUrl
-    }));
-
-    // 모집 포지션 설정
-    positions.value = project.positionDtoList.map((positions) => ({
-      positionName: positions.positionName,
-      requiredCount: positions.requiredCount
-    }));
-
-    // 파일 설정 (이미 첨부된 파일이 있다면 미리보기)
-    file.value = project.boardImage ? project.boardImage : null;
-  } catch (error) {
-    console.error('게시글 정보 불러오기 실패:', error);
-  }
-};
-
-// 수정 완료 함수
 const save = async () => {
   const data = {
     title: title.value,
     content: content.value,
     projectPeriod: project_period.value,
     location: location.value,
+    startDate: start_date.value,
     recruitEndDate: recruit_end_date.value,
     boardTechStackList: selectedSkills.value,
     boardPositionList: positions.value
@@ -404,16 +368,14 @@ const save = async () => {
   formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
   formData.append('boardImage', file.value);
   // console.log('파일정보', file.value);
-
   // const formData = new FormData();
   // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
   // console.log('저장내용', data);
-  const res = await updateProject(boardId, formData);
-  
+  const res = await saveProject(formData);
   console.log(JSON.stringify(formData));
   if (res.status === 200) {
-    alert('글이 수정되었습니다.');
+    alert('글이 작성되었습니다.');
     router.push({ name: 'projectlist' });
     return;
   }
@@ -449,7 +411,6 @@ watchEffect(() => {
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출
   updateLocations(); // 지역 API 호출
-  getProjectData();
   document.addEventListener('mousedown', handleClickOutside); // 바탕 클릭 시 드롭다운 닫기
 });
 </script>

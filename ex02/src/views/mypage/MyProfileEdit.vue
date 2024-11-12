@@ -1,6 +1,6 @@
 <template>
-  <div class="m-auto w-full">
-    <div class="my-3" style="width: 900px">
+<div class="m-auto w-full h-screen flex justify-center">
+  <div class="my-3" style="width: 900px">
         <!-- <div class="justify-center items-center"> -->
         <form @submit.prevent="handleSubmit" class="grid gap-y-6 px-20 py-10">
           <!-- 프로필 사진 -->
@@ -20,10 +20,12 @@
           <div class="grid grid-cols-4 items-center gap-x-4">
             <label class="text-gray-700 text-lg font-semibold">닉네임 <span class="text-red-500">*</span></label>
             <div class="col-span-2 flex items-center">
-              <input type="text" v-model="nickname" placeholder=useStore.proFile.nickname
-                class="flex-1 border p-2 rounded-full" required />
+              <input type="text" v-model="nickname" placeholder="자모음 단일사용 불가" class="flex-1 border p-2 rounded-full"
+                required />
               <button type="button" @click="checkNickname"
                 class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
+              <!-- <button type="button" @click="checkNickname"
+                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
             </div>
             <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 또는 영어, 8글자 이하 (공백X)</p>
           </div>
@@ -32,7 +34,7 @@
           <div class="grid grid-cols-4 items-center gap-x-4">
             <label class="text-gray-700 text-lg font-semibold">소속</label>
             <input type="text" v-model="groupName" placeholder=useStore.proFile.groupName
-              class="col-span-2 border p-2 rounded-full w-full" />
+              class="col-span-2 border p-2 h-10 rounded-full w-full" />
           </div>
 
 
@@ -55,7 +57,7 @@
             <div class="col-span-3">
               <div v-for="(position, index) in positions" :key="index" class="flex items-center w-300 mb-3">
                 <!-- 포지션 선택 부분 -->
-                <select v-model="position.positionName" class="p-2 border-2 border-gray-200 rounded-full"
+                <select v-model="position.positionName" class="p-2 mr-2 border-2 h-10 border-gray-200 rounded-full"
                   style="width: 410px">
                   <option disabled value="">분야를 선택하세요</option>
                   <option v-for="positionName in roleOptions" :key="positionName.positionName">{{
@@ -64,7 +66,7 @@
 
                 <!-- 삭제 버튼: 첫 번째 항목에서는 비활성화 -->
                 <button type="button" @click="removePosition(index)" v-if="index > 0"
-                  class="text-[#d10000] text-sm pl-2 pr-2 border font-bold border-gray-200 rounded-full hover:bg-[#d10000] hover:font-bold hover:text-white hover:border-[#d10000]">
+                  class="text-[#d10000] text-sm px-2 mr-2 border font-bold border-gray-200 rounded-full hover:bg-[#d10000] hover:font-bold hover:text-white hover:border-[#d10000]">
                   삭제
                 </button>
 
@@ -84,7 +86,7 @@
               <!-- 'relative' 클래스를 추가 -->
               <div class="flex">
                 <div @click="toggleDropdown"
-                  class=" h-11 p-2 border rounded-full cursor-pointer flex items-center justify-between" style="min-width: 400px">
+                  class="h-10 p-2 border rounded-full cursor-pointer flex items-center justify-between" style="min-width: 400px">
                   <span>{{ selectedSkill.value || '기술을 선택하세요' }}</span>
                   <font-awesome-icon icon="chevron-down" class="text-gray-300 pl-2" />
                 </div>
@@ -125,8 +127,7 @@
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { useUserStore } from '@/store/userStore';
-import { loginUsers,uploadprofile, deleteUser } from '@/api/loginApi'; 
-import { userInfo, patchUserInfo } from '@/api/userApi'; 
+import { loginUsers,uploadprofile,checkNickname, deleteUser } from '@/api/loginApi'; 
 import { useRouter } from 'vue-router';
 import { getPositions, getTechstacks, getLocation } from '@/api/projectApi';
 
@@ -143,6 +144,22 @@ const fileInput = ref(null);
 const selectedFile = ref(null)   // 실제 파일 객체 (FormData에 첨부할 용도)
 
 // const isSubmitted = ref(false); // 완료 버튼 클릭 여부를 추적
+
+
+
+// // 닉네임 중복 확인 함수
+// const isNicknameAvailable = ref(true);  // 닉네임 중복 여부 상태
+// const res = await checkNickname(nickname.value);
+
+// // API 응답에 따라 처리
+// if (res.data.isAvailable) {
+//   alert('사용 가능한 닉네임입니다.');
+//   isNicknameAvailable.value = true;  // 사용 가능 상태로 설정
+// } else {
+//   alert('이미 사용 중인 닉네임입니다.');
+//   isNicknameAvailable.value = false;  // 사용 불가능 상태로 설정
+// }
+
 
 
 // 프로필 이미지를 선택하는 핸들러
@@ -211,7 +228,24 @@ const handleSubmit = async () => {
     // uploadprofile API를 호출해서 userProfile을 저장
     await uploadprofile(formData);  // formData 대신 userProfile 객체를 전달
 
-    useStore.profile(formData); // 사용자 정보를 Pinia 스토어에 저장
+    const data = await loginUsers();
+    console.log('data = '+JSON.stringify(data));
+    /*
+    "id": 3,
+    "username": "google_117800404206649457906",
+    "nickname": "nhkhjkh",
+    "email": "searheh@gmail.com",
+    "groupName": "",
+    "profileImage": "http://localhost:8080/file/images/b37dc3dd-91b6-4382-9ff6-8521c0326ed1.png",
+    "role": "ROLE_USER",
+    "location": "미정",
+    "positions": [],
+    "techStacks": []
+    */
+    
+    await useStore.profile(data); // 사용자 정보를 Pinia 스토어에 저장
+
+    // useStore.profile(formData); // 사용자 정보를 Pinia 스토어에 저장
     
     console.log('현재 스토어 데이터: ', useStore.profile)
 

@@ -1,18 +1,19 @@
 <template>
-  <div class="flex justify-center items-center mx-auto my-10" style="width: 900px">
+  <div class="flex justify-center items-center mx-auto my-10">
     <div class="justify-center items-center">
-      <div class="my-3" style="width: 900px">
+      <div class="my-3">
         <h2 class="text-2xl font-semibold mb-2">내 정보 입력</h2>
         <hr class="border-t-4 border-[#d10000]" />
 
-        <form @submit.prevent="handleSubmit" class="grid gap-y-6 px-20 py-10">
+        <form @submit.prevent="handleSubmit" class="grid gap-y-6  px-20 py-10">
           <!-- 프로필 사진 -->
-          <div class="grid grid-cols-4 items-center gap-x-4">
-            <label for="profileImage" class="text-gray-700 text-lg font-semibold">프로필 사진</label>
+          <div class="grid grid-cols-5  items-center gap-x-4">
+            <label for="profileImage" class="col-start-2 text-gray-700 text-lg font-semibold">프로필 사진</label>
             <div class="col-span-2 flex items-center">
               <!-- 파일 인풋을 숨기고, 클릭하면 파일을 선택 -->
               <input type="file" @change="onFileChange" accept="image/*" class="hidden" ref="fileInput" />
-              <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer" @click="selectFile">
+              <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer"
+                @click="selectFile">
                 <!-- 이미지가 있으면 미리보기, 없으면 + 버튼을 보여줌 -->
                 <img v-if="profileImage" :src="profileImage" class="w-full h-full rounded-full object-cover" />
                 <span v-else class="text-gray-500 text-2xl">+</span>
@@ -21,69 +22,70 @@
           </div>
 
           <!-- 닉네임 -->
-          <div class="grid grid-cols-4 items-center gap-x-4">
-            <label class="text-gray-700 text-lg font-semibold">닉네임 <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-5 items-center gap-x-4">
+            <label class="col-start-2 text-gray-700 text-lg font-semibold">닉네임 <span
+                class="text-red-500">*</span></label>
             <div class="col-span-2 flex items-center">
-              <input type="text" v-model="nickname" placeholder="브라기오사무로스" class="flex-1 border p-2 rounded-full" required />
-              <button type="button" @click="checkNickname" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
+              <input type="text" v-model="nickname" placeholder="자모음 단일사용 불가" class="flex-1 border p-2 rounded-full"
+                required />
+              <button type="button" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
+              <!-- <button type="button" @click="checkNickname"
+                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
             </div>
             <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 또는 영어, 2~8글자 이하 (공백, 특수문자 X)</p>
           </div>
 
           <!-- 소속 -->
-          <div class="grid grid-cols-4 items-center gap-x-4">
-            <label class="text-gray-700 text-lg font-semibold">소속</label>
-            <input type="text" v-model="groupName" placeholder="그린대학교" class="col-span-2 border p-2 rounded-full w-full" />
+          <div class="grid grid-cols-5 items-center gap-x-4">
+            <label class="col-start-2 text-gray-700 text-lg font-semibold">소속</label>
+            <input type="text" v-model="groupName" placeholder="그린대학교"
+              class="col-span-2 border p-2 rounded-full w-full" />
           </div>
 
           <!--🌍지역드롭다운-->
-          <div class="flex flex-col">
-            <h1 class="font-bold text-lg pb-2">지역<span class="text-[#d10000] mx-1">*</span></h1>
-            <select v-model="location" class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
-              <option disabled value="">지역을 선택하세요</option>
-              <option value="" disabled>{{ location ? location : '지역 선택하세요' }}</option>
-            <option>미정</option>
-            <option>서울</option>
-            <option>경기</option>
-            <option>인천</option>
-            <option>강원</option>
-            <option>대구/경북</option>
-            <option>대전/충청</option>
-            <option>부산/울산/경남</option>
-            <option>광주/전라</option>
-            <option>제주</option>
+          <div class="grid grid-cols-5 items-center gap-x-4">
+            <h1 class="col-start-2 font-bold text-lg pb-2">지역</h1>
+            <select v-model="location"
+              class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
+              <option value="" disabled>{{ location ? location : '지역을 선택하세요' }}</option>
+              <option>미정</option>
+              <option>서울</option>
+              <option>경기</option>
+              <option>인천</option>
+              <option>강원</option>
+              <option>대구/경북</option>
+              <option>대전/충청</option>
+              <option>부산/울산/경남</option>
+              <option>광주/전라</option>
+              <option>제주</option>
             </select>
           </div>
 
           <!-- 포지션 -->
-          <div class="grid grid-cols-4 items-center gap-x-4">
-            <label class="text-gray-700 text-lg font-semibold">포지션</label>
+          <div class="grid grid-cols-5 items-center gap-x-4">
+            <div class="items-start	col-start-2">
+              <label class="col-start-2 text-gray-700 text-lg font-semibold">포지션</label>
+            </div>
             <div class="col-span-3">
               <div v-for="(position, index) in positions" :key="index" class="flex items-center space-x-7 mb-3">
                 <!-- 포지션 선택 부분 -->
-                <select v-model="position.positionName" class="w-1/2 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
+                <select v-model="position.positionName"
+                  class="w-1/2 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
                   <option disabled value="">분야를 선택하세요</option>
-                  <option v-for="positionName in roleOptions" :key="positionName.positionName">{{ positionName.positionName }}</option>
+                  <option v-for="positionName in roleOptions" :key="positionName.positionName">{{
+                    positionName.positionName }}</option>
                 </select>
 
                 <!-- 삭제 버튼: 첫 번째 항목에서는 비활성화 -->
                 <div class="flex space-x-4">
-                  <button
-                    type="button"
-                    @click="removePosition(index)"
-                    v-if="index > 0"
-                    class="text-[#d10000] text-sm pl-2 pr-2 border font-bold border-gray-200 rounded-full hover:bg-[#d10000] hover:font-bold hover:text-white hover:border-[#d10000]"
-                  >
+                  <button type="button" @click="removePosition(index)" v-if="index > 0"
+                    class="text-[#d10000] text-sm pl-2 pr-2 border font-bold border-gray-200 rounded-full hover:bg-[#d10000] hover:font-bold hover:text-white hover:border-[#d10000]">
                     삭제
                   </button>
 
                   <!-- 마지막 칸에만 추가 버튼 표시 -->
-                  <button
-                    v-if="index === positions.length - 1"
-                    type="button"
-                    @click="addPosition"
-                    class="text-[#7371fc] text-sm pl-2 pr-2 border font-bold border-gray-200 rounded-full hover:bg-[#7371fc] hover:font-bold hover:text-white hover:border-[#7371fc]"
-                  >
+                  <button v-if="index === positions.length - 1" type="button" @click="addPosition"
+                    class="text-[#7371fc] text-sm pl-2 pr-2 border font-bold border-gray-200 rounded-full hover:bg-[#7371fc] hover:font-bold hover:text-white hover:border-[#7371fc]">
                     추가
                   </button>
                 </div>
@@ -92,29 +94,33 @@
           </div>
 
           <!--✅기술/언어 선택 -> 다중선택, 선택삭제 가능하도록-->
-          <div class="flex flex-col justify-between mt-5" ref="dropdownContainer">
-            <h1 class="font-bold text-lg pb-2">기술 / 언어<span class="text-sm mx-1">(최대 10개)</span><span class="text-[#d10000] mx-1">*</span></h1>
-
+          <div class="grid grid-cols-5 items-center gap-x-4" ref="dropdownContainer">
+            <h1 class="col-start-2 font-bold text-lg pb-2">기술 / 언어<br /><span class="text-sm mx-1">(최대 10개)</span></h1>
             <div class="relative w-full m-auto flex">
-              <div @click="toggleDropdown" class="min-w-72 h-10 p-2 border border-gray-200 rounded-full cursor-pointer flex items-center justify-between">
+              <div @click="toggleDropdown"
+                class="min-w-72 h-10 p-2 border border-gray-200 rounded-full cursor-pointer flex items-center justify-between">
                 <span>{{ selectedSkill.value || '기술을 선택하세요' }}</span>
                 <font-awesome-icon icon="chevron-down" class="text-gray-300 pl-2" />
               </div>
               <!--드롭다운-->
-              <div v-if="isDropdownOpen" class="absolute bg-white border border-gray-200 rounded-lg mt-12 ml-1 min-w-96 z-10">
+              <div v-if="isDropdownOpen"
+                class="absolute bg-white border border-gray-200 rounded-lg mt-12 ml-1 min-w-96 z-10">
                 <div class="grid grid-cols-5 gap-2 p-2">
-                  <div v-for="tech in availableTechOptions" :key="tech" @click="selectSkill(tech)" class="cursor-pointer text-sm gap-3">
+                  <div v-for="tech in availableTechOptions" :key="tech" @click="selectSkill(tech)"
+                    class="cursor-pointer text-sm gap-3">
                     <img :src="tech.imageUrl" class="w-10 h-12 item-center hover:w-12" />
                     <p class="">{{ tech.techStackName }}</p>
                   </div>
                 </div>
               </div>
-
               <div class="flex flex-wrap">
-                <div v-for="(skill, index) in selectedSkills" :key="index" @click="removeSkill(index)" class="pl-4 mt-1 mb-3 flex items-center gap-2 cursor-pointer">
-                  <img :src="skill.imageUrl" class="w-8 h-8" />
-                  <span class="text-sm m-auto w-16"> {{ skill.techStackName }}</span>
-                  <p class="text-[#d10000] font-bold mx-3">x</p>
+                <div class="flex flex-wrap col-span-2">
+                  <div v-for="(skill, index) in selectedSkills" :key="index" @click="removeSkill(index)"
+                    class="pl-4 mt-1 mb-3 flex items-center gap-2 cursor-pointer">
+                    <img :src="skill.imageUrl" class="w-8 h-8" />
+                    <span class="text-sm m-auto w-16"> {{ skill.techStackName }}</span>
+                    <p class="text-[#d10000] font-bold mx-3">x</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -134,7 +140,7 @@
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { useUserStore } from '@/store/userStore';
-import { loginUsers, uploadprofile, deleteUser } from '@/api/loginApi'; // registerUser 추가
+import { loginUsers, uploadprofile, checkNickname, deleteUser } from '@/api/loginApi'; // registerUser 추가
 import { useRouter } from 'vue-router';
 import { getPositions, getTechstacks, getLocation } from '@/api/projectApi';
 
@@ -299,11 +305,14 @@ const removePosition = (index) => {
   positions.value.splice(index, 1);
 };
 
+
+
+
 const nickname = ref('');
 const groupName = ref('');
 const location = ref('');
-const positionList = ref('');
-const techStackList = ref('');
+const positionList = ref([]);
+const techStackList = ref([]);
 const profileImage = ref(null); // 프로필 이미지 미리보기용
 const selectedFile = ref(null); // 실제 파일 객체 (FormData에 첨부할 용도)
 const isSubmitted = ref(false); // 완료 버튼 클릭 여부를 추적
@@ -324,6 +333,15 @@ const selectFile = () => {
   fileInput.click(); // 파일 인풋을 클릭하여 파일 선택
 };
 
+const selectPosition = () => {
+  positionList.value.push('positionName');
+}
+
+const selectTechStac = () => {
+  techStackList.value.push('positionName');
+}
+
+
 // 사용자가 입력한 데이터 저장
 const handleSubmit = async () => {
   const formData = new FormData();
@@ -337,14 +355,20 @@ const handleSubmit = async () => {
     return;
   }
 
+  // ['백엔드','프론트']
+
+  // positionList.value.push('백엔드');
+  // positionList.value.push('프론트');
+
+
   // 기존 사용자 정보를 가져와서 변경된 부분만 업데이트
   const userProfile = {
     email: user.result.email,
     nickname: nickname.value,
     groupName: groupName.value,
     location: location.value,
-    positionList: positionList.value.length > 0 ? JSON.stringify(positionList.value) : user.positionList, // 기존 positionList 사용
-    techStackList: techStackList.value.length > 0 ? JSON.stringify(techStackList.value) : user.techStackList, // 기존 techStackList 사용
+    positionList: selectPosition.value,
+    techStackList: selectTechStac.value,
     profileImage: profileImage.value
   };
   console.log('최종 유저 프로필', userProfile);
@@ -362,14 +386,29 @@ const handleSubmit = async () => {
   }
 
   formData.append('userProfile', new Blob(
-                            [JSON.stringify(userProfile)],
-                            { type:'application/json'}
-                          ));
+    [JSON.stringify(userProfile)],
+    { type: 'application/json' }
+  ));
   console.log('폼데이터최종', JSON.stringify(userProfile));
   try {
     // uploadprofile API를 호출해서 userProfile을 저장
     await uploadprofile(formData); // formData 대신 userProfile 객체를 전달
-    useStore.profile(userProfile); // 사용자 정보를 Pinia 스토어에 저장
+    const data = await loginUsers();
+    console.log('data = ' + JSON.stringify(data));
+    /*
+    "id": 3,
+    "username": "google_117800404206649457906",
+    "nickname": "nhkhjkh",
+    "email": "searheh@gmail.com",
+    "groupName": "",
+    "profileImage": "http://localhost:8080/file/images/b37dc3dd-91b6-4382-9ff6-8521c0326ed1.png",
+    "role": "ROLE_USER",
+    "location": "미정",
+    "positions": [],
+    "techStacks": []
+    */
+
+    await useStore.profile(data); // 사용자 정보를 Pinia 스토어에 저장
 
     // formData.forEach((value, key) => {
     //   console.log(key, value);  // 각 key-value를 출력
@@ -386,19 +425,24 @@ const handleSubmit = async () => {
 // 페이지 로드 시 사용자 정보 가져오기
 // getUserInfo();
 
-// const checkNickname = async () => {
-//   try {
-//     const response = await checkNickname(formData.value.nickname); // 닉네임 중복 확인 API 호출
-//     if (response.available) {
-//       alert('사용 가능한 닉네임입니다.');
-//     } else {
-//       alert('이미 사용 중인 닉네임입니다.');
-//     }
-//   } catch (error) {
-//     console.error('닉네임 중복 확인 실패:', error);
-//     alert('닉네임 중복 확인에 실패했습니다.');
-//   }
-// };
+
+
+
+// // 닉네임 중복 확인 함수
+// const isNicknameAvailable = ref(true);  // 닉네임 중복 여부 상태
+
+// const res = await checkNickname(nickname);
+
+// // API 응답에 따라 처리
+// if (res.data.isAvailable) {
+//   alert('사용 가능한 닉네임입니다.');
+//   isNicknameAvailable.value = true;  // 사용 가능 상태로 설정
+// } else {
+//   alert('이미 사용 중인 닉네임입니다.');
+//   isNicknameAvailable.value = false;  // 사용 불가능 상태로 설정
+// }
+
+
 
 //회원가입 취소
 const handleCancel = async () => {

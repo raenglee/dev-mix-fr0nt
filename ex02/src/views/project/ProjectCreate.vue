@@ -373,7 +373,7 @@ const save = async () => {
 
   // console.log('저장내용', data);
   const res = await saveProject(formData);
-  console.log(JSON.stringify(formData));
+  // console.log(JSON.stringify(formData));
   if (res.status === 200) {
     alert('글이 작성되었습니다.');
     router.push({ name: 'projectlist' });
