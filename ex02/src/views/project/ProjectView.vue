@@ -107,12 +107,13 @@
         <div class="flex justify-between mb-3 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
-            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
+            <button 
+            class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
               수정
-            </button>
-            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">
+            </button> <!--v-if="nickname == loggedInUserNickname" -->
+            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">
               삭제
-            </button>
+            </button> <!--v-if="nickname == loggedInUserNickname" -->
           </div>
         </div>
         <!-- 댓글 작성 -->
@@ -227,7 +228,7 @@ const files = ref([]);
 watchEffect(async () => {
   const res = await getProjectView(route.params.board_id);
   if (res.status == 200) {
-    // console.log('게시글 정보', res.data.result);
+    console.log('게시글 정보', res.data.result);
     title.value = res.data.result.title;
     content.value = res.data.result.content;
     location.value = res.data.result.location;

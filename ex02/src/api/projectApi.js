@@ -22,7 +22,7 @@ export const listProject = async (pageNumber = 1, pageSize = 16) => {
 
 // 프로젝트 상세 페이지
 export const getProjectView = async (board_id) => {
-  // console.log('게시판 주소: ', `${url}/${board_id}`);
+  console.log('게시판 주소: ', `${url}/${board_id}`);
   try {
     const res = await axios.get(`${url}/${board_id}`);
     return res;
@@ -64,8 +64,8 @@ export const saveProject = async (formData) => {
 
 // 프로젝트 수정
 export const updateProject = async (board_id, formData) => {
-  // console.log('저장axios 호출');
-  // console.log('토큰: ', localStorage.getItem('token'));
+  // console.log('수정axios 호출');
+  console.log('토큰: ', localStorage.getItem('token'));
   try {
     const res = await axios.put(`${url}/${board_id}`, formData, {
       headers: {
@@ -75,7 +75,7 @@ export const updateProject = async (board_id, formData) => {
     });
     return res;
   } catch (e) {
-    console.log('저장 Api 에러 발생:', e.response ? e.response.data : e.message);
+    console.log('수정 Api 에러 발생:', e.response ? e.response.data : e.message);
     // console.log(res.data);
     return e;
   }

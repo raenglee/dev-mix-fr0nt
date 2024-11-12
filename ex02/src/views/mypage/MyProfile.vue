@@ -28,7 +28,7 @@
         <span class="text-sm py-4">{{ tech.techStackName }}</span>
       </li>
     </div>
-    <div class="flex justify-end mt-auto mb-5">
+    <div class="flex justify-end mt-auto">
       <p class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">회원탈퇴</p>
     </div>
     <!--😀개인 정보 끝-->
