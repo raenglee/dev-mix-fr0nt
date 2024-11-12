@@ -4,7 +4,7 @@
     <div class="m-auto flex flex-col justify-center text-center border border-gray-200 p-3 mb-2 w-full rounded-xl">
       <img class="h-20 w-20 m-auto" src="/img/people.png" />
       <p>{{ useStore.nickname }}님</p>
-      <p class="text-sm text-gray-300">{{ useStore.email }}</p>
+      <p class="text-sm text-gray-400">{{ useStore.email }}</p>
       <div class="flex justify-center text-center py-3">
         <RouterLink to="/myprofileedit"><button class="border border-gray-300 rounded-md py-1 px-3 mx-1">프로필 수정</button></RouterLink>
         <button class="border border-gray-300 rounded-md py-1 px-2">공유</button>
