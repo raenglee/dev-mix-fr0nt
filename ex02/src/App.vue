@@ -1,7 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import LayoutHeader from '@/views/header/Headerlayout.vue';
-import Footerlayout from './views/header/Footerlayout.vue';
+import LayoutHeader from '@/views/header/Header-Layout.vue';
+import Footerlayout from './views/header/Footer-Layout.vue';
 // import LayoutHeadercopy from '@/views/header/RedHeader copy.vue';
 </script>
 
