@@ -62,11 +62,11 @@ export const saveProject = async (formData) => {
   }
 };
 
-export const updateProject = async (formData) => {
+export const updateProject = async (board_id, formData) => {
   // console.log('저장axios 호출');
   // console.log('토큰: ', localStorage.getItem('token'));
   try {
-    const res = await axios.put(`${url}`, formData, {
+    const res = await axios.put(`${url}/${board_id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('token')}`

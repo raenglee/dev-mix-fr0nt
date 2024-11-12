@@ -409,7 +409,7 @@ const save = async () => {
   // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
   // console.log('저장내용', data);
-  const res = await updateProject(formData);
+  const res = await updateProject(boardId, formData);
   
   console.log(JSON.stringify(formData));
   if (res.status === 200) {
