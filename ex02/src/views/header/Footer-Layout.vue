@@ -3,7 +3,7 @@
     <br>푸터<br> 내용<br>
   </div> -->
 
-  <div class="bg-[#d10000] w-full text-white text-center py-3 mt-10">
+  <div class="bg-[#d10000] w-full text-white text-center py-3 mt-5">
       DEVMIX
       <br>푸터<br> 내용<br>
     </div>

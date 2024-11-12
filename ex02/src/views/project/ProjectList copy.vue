@@ -217,7 +217,6 @@
     </section>
   </div>
 
-  <div class="bottom bg-[#d10000] bottom-0 left-0 w-full text-white text-center">DEVMIX</div>
 </template>
 
 <script setup>

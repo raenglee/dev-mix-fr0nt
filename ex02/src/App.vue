@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import LayoutHeader from '@/views/header/Header-Layout.vue';
+import FooterLayout from './views/header/Footer-Layout.vue';
 // import LayoutHeadercopy from '@/views/header/RedHeader copy.vue';
 </script>
 
@@ -9,6 +10,7 @@ import LayoutHeader from '@/views/header/Header-Layout.vue';
   <!--로그인 안하고 로그인한상태의 헤더 보는 법-->
   <LayoutHeader />
   <RouterView />
+  <FooterLayout />
 </template>
 
 <style scoped></style>

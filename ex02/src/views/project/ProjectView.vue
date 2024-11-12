@@ -17,7 +17,7 @@
         <div class="justify-between grid grid-cols-9 gap-4 px-20">
           <div class="flex flex-col space-y-10 col-span-3">
             <div class="items-center">
-              <p for="region" class="font-bold text-lg pr-2 ">지역 / 구분</p>
+              <p for="region" class="font-bold text-lg pr-2">지역 / 구분</p>
               <p class="py-2 pl-2">{{ location }}</p>
               <!-- 지역 정보 표시 -->
             </div>
@@ -36,7 +36,7 @@
             </div> -->
           </div>
           <div class="col-span-2 pl-0">
-            <p class="font-bold text-lg pr-2 ">모집 마감일</p>
+            <p class="font-bold text-lg pr-2">모집 마감일</p>
             <p class="py-2 pl-2">{{ endDate }}</p>
           </div>
           <div class="space-y-4 col-span-4 pl-20 flex flex-col">
@@ -46,26 +46,27 @@
               <div v-for="(position, index) in positions" :key="index" class="flex items-center justify-between">
                 <p class="w-1/3 text-left">{{ position.positionName }}</p>
                 <p class="w-1/3 text-center">{{ position.currentCount }}/{{ position.requiredCount }}</p>
-                <button v-if="!(nickname == loggedInUserNickname)" @click="openModal(position.positionName)"
-                  class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200">
+                <button
+                  v-if="!(nickname == loggedInUserNickname)"
+                  @click="openModal(position.positionName)"
+                  class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200"
+                >
                   지원
                 </button>
 
-                <button v-else-if="!isPending && nickname !== loggedInUserNickname"
-                  class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 bg-gray-300 cursor-not-allowed">
+                <button v-else-if="!isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 bg-gray-300 cursor-not-allowed">
                   승인대기
                 </button>
 
-                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp"
-      class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200">
-      지원자 확인
-    </button>
+                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200">
+                  지원자 확인
+                </button>
               </div>
             </div>
           </div>
 
           <div class="flex flex-col col-span-3 items-center pt-5">
-            <p class="font-bold text-lg w-full ">기술 / 언어</p>
+            <p class="font-bold text-lg w-full">기술 / 언어</p>
             <div class="flex items-center w-full">
               <!-- <div class="py-2 space-x-5" v-for="tech in techStacks" :key="tech">
                 <img :src="tech.imageUrl" class="w-10 h-10" />
@@ -74,8 +75,7 @@
               <!--말줄임-->
               <div class="py-2 space-x-5 flex items-center">
                 <!-- 최대 4개까지만 아이템을 출력하고 나머지는 '...'으로 표시 -->
-                <div v-for="tech in techStacks.slice(0, 4)" :key="tech.id"
-                  class="inline-flex flex-col items-center space-x-2">
+                <div v-for="tech in techStacks.slice(0, 4)" :key="tech.id" class="inline-flex flex-col items-center space-x-2">
                   <img :src="tech.imageUrl" class="w-10 h-10" />
                   <span class="text-sm">{{ tech.techStackName }}</span>
                 </div>
@@ -102,20 +102,17 @@
 
         <!--글 박스 끝-->
         <div>
-
           <hr class="border-t-4 border-[#d10000]" />
-
         </div>
         <div class="flex justify-between mb-3 mx-7">
-          <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200"
-              @click="goToList">목록</button></RouterLink>
+          <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
-            <button v-if="nickname == loggedInUserNickname"
-              class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]"
-              @click="doUpdate">수정</button>
-            <button v-if="nickname == loggedInUserNickname"
-              class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]"
-              @click="doDelete">삭제</button>
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
+              수정
+            </button>
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">
+              삭제
+            </button>
           </div>
         </div>
         <!-- 댓글 작성 -->
@@ -127,13 +124,11 @@
           <!--댓글 입력창-->
           <div class="flex items-center w-full">
             <div class="my-6 mx-7 justify-center" style="width: 90%">
-              <textarea v-model="commentContent"
-                class="w-full p-3 h-20 border border-gray-200 rounded-md focus:outline-none ring-gray-200 resize-none bg-gray-100"></textarea>
+              <textarea v-model="commentContent" class="w-full p-3 h-20 border border-gray-200 rounded-md focus:outline-none ring-gray-200 resize-none bg-gray-100"></textarea>
               <p>250자 제한</p>
             </div>
             <div>
-              <button class="border border-gray-200 rounded-md h-20 w-20 px-2 text-base hover:bg-gray-100"
-                @click="commentsave">등록</button>
+              <button class="border border-gray-200 rounded-md h-20 w-20 px-2 text-base hover:bg-gray-100" @click="commentsave">등록</button>
             </div>
           </div>
           <!--댓글목록-->
@@ -148,8 +143,7 @@
                 <!-- 댓글 내용 -->
                 <p class="text-gray-800 flex-1">{{ comment.commentContent }}</p>
                 <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2">수정</button>
-                <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2"
-                  @click="commentDelete(comment.id)">삭제</button>
+                <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="commentDelete(comment.id)">삭제</button>
               </div>
               <p class="text-xs mt-3 mb-4 mx-2 text-gray-500">{{ comment.createdAt }}</p>
               <div>
@@ -203,7 +197,6 @@
       <button @click="closeConfirmModal">확인</button>
     </div>
   </div>
-
 </template>
 
 <script setup>
@@ -214,10 +207,8 @@ import { useRoute } from 'vue-router';
 import { applyProject } from '@/api/projectApi'; // API 임포트
 import { useUserStore } from '@/store/userStore';
 
-
 const useStore = useUserStore();
 const route = useRoute();
-
 
 // 로그인된 사용자 정보 (예: useStore 또는 localStorage에서 가져오는 값)
 const loggedInUserNickname = ref(useStore.nickname);
@@ -254,7 +245,6 @@ watchEffect(async () => {
     alert('데이터연결안됨', res.response.data.message);
   }
 });
-
 
 const goToProjectApp = () => {
   router.push({ name: 'projectapplication' }); // 'projectapplication' 경로로 이동
@@ -344,7 +334,6 @@ const commentDelete = async (id) => {
   }
 };
 
-
 //모달
 
 // 지원 직군을 저장하는 변수
@@ -365,7 +354,6 @@ const openModal = (position) => {
 const closeModal = () => {
   showModal.value = false;
 };
-
 
 //지원기능
 const isPending = ref(false); // 지원 상태 변수
@@ -393,15 +381,10 @@ const confirmSubmit = async () => {
   }
 };
 
-
 // 완료 모달 닫기
 const closeConfirmModal = () => {
   isConfirmModal.value = false;
 };
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
