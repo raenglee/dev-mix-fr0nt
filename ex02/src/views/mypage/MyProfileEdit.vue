@@ -190,17 +190,11 @@ const handleSubmit = async () => {
     else {
       const imgSrc = document.getElementById('profileImg').src;
 
-      fetch(imgSrc)
+      await fetch(imgSrc)
         .then((response) => response.blob())
         .then((blob) => {
-          // Blob을 파일로 처리할 수도 있습니다.
           const file = new File([blob], 'profileImage.png', { type: blob.type });
-
-          // 예: FormData에 추가하기
           formData.append('profileImage', file , "aaa.png");
-
-          // 이제 formData를 서버로 전송할 수 있습니다.
-          // fetch('/upload', { method: 'POST', body: formData });
         })
         .catch((error) => console.error('Error fetching image:', error));
     }
