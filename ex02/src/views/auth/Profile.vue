@@ -29,8 +29,8 @@
             <div class="col-span-2 flex items-center">
               <input type="text" v-model="nickname" placeholder="자모음 단일사용 불가" class="flex-1 border p-2 px-4 rounded-full" required />
               <button type="button" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
-              <!-- <button type="button" @click="checkNickname"
-                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
+              <button type="button" @click="checkNickname"
+                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
             </div>
             <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 또는 영어, 2~8글자 이하 (공백, 특수문자 X)</p>
           </div>

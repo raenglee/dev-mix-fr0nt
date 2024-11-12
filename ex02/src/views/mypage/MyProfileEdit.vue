@@ -141,7 +141,7 @@ const loadUserProfile = async () => {
   try {
     const profile = await loginUsers(); // API로부터 사용자 프로필 정보 가져오기
     userProfile.value = profile.result; // API에서 받은 데이터를 userProfile에 저장
-    console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
+    // console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
 
     // 원래 있는 기술 넣기
     const updatedTechStacks = userProfile.value.techStacks.map(({ techStackName, techStackImageUrl }) => ({
@@ -237,6 +237,8 @@ const handleSubmit = async () => {
     await uploadprofile(formData); // formData 대신 userProfile 객체를 전달
     const data = await loginUsers();
     await useStore.profile(data.result); // 사용자 정보를 Pinia 스토어에 저장
+
+    console.log(JSON.stringify(userProfile.value));
 
     alert('수정 되었습니다.');
     router.push('/'); // 성공 시 프로필 페이지로 이동
