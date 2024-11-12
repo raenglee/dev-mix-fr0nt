@@ -34,6 +34,7 @@
 </template>
 
 <script setup>
+import { getPositions, getTechstacks } from '@/api/projectApi';
 import { loginUsers } from '@/api/loginApi';
 import { ref, watchEffect } from 'vue';
 import { useUserStore } from '@/store/userStore';
@@ -67,10 +68,43 @@ const loadUserProfile = async () => {
 // 포지션 데이터 가져오기
 
 
+const selectPositions = async () => {
+  try {
+    const res = await getPositions();
+    // console.log('updatePsotions 데이터 확인: ', res);
+    if (Array.isArray(res.data.result)) {
+      // positionOptions.value = res.data.result;
+    } else {
+      console.error('분야별 모집 인원 배열 저장 에러', res);
+    }
+  } catch (error) {
+    console.error('실패:', error);
+  }
+};
+
+const selelctTechstacks = async () => {
+  try {
+    const res = await getTechstacks();
+    // console.log('updateTechstacks 데이터 확인: ', res);
+    // techOptions.value = res.result;
+    if (Array.isArray(res.data.result)) {
+      techOptions.value = res.data.result.map((item) => ({
+        techStackName: item.techStackName,
+        imageUrl: item.imageUrl
+      }));
+    } else {
+      console.error('기술/언어 배열 저장 에러', res);
+    }
+  } catch (error) {
+    console.error('실패:', error);
+  }
+};
+
 watchEffect(() => {
   loadUserProfile();
-
-});
+  selectPositions();
+  selelctTechstacks();
+});;
 </script>
 
 <style lang="scss" scoped></style>

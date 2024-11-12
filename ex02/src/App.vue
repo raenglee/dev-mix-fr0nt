@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import LayoutHeader from '@/views/header/Headerlayout.vue';
+import LayoutHeader from '@/views/header/Header-Layout.vue';
 // import LayoutHeadercopy from '@/views/header/RedHeader copy.vue';
 </script>
 
