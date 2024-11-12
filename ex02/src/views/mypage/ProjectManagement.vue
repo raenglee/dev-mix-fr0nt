@@ -8,52 +8,36 @@
           <button type="button" class="border border-gray-400 w-12 rounded-full text-sm" @click="toggleAllCheckboxes">전체</button>
           <button type="button" class="border border-gray-400 w-12 rounded-full text-sm">삭제</button>
         </div>
-
-        <div class=" p-3">
+        <div class="p-3">
           <!--글내용-->
-          <div class="flex items-center justify-between w-full">
-            <div class="flex gap-3 items-center w-full">
-              <input type="checkbox" class="form-checkbox" />
-              <!-- 내용 텍스트, 말줄임표 적용 -->
-              <div class="flex flex-col">
-                <p class="text-sm text-gray-700 mb-1">작성 YYYY.MM.DD</p>
-                <div class="flex">
-                  <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2">지역</div>
-                  <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">[모집합니다] 제목</p>
+          <RouterLink to="/projectview/:board_id">
+            <div v-for="(board, index) in boardsarr" :key="index">
+              <div class="board-item">
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex gap-3 items-center w-full">
+                    <input type="checkbox" class="form-checkbox" />
+                    <!-- 내용 텍스트, 말줄임표 적용 -->
+                    <div class="flex flex-col">
+                      <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
+                      <div class="flex">
+                        <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2">{{ board.location }}</div>
+                        <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">{{ board.title }}</p>
+                        <p class="text-[#d10000]">[{{ board.commentCount }}]</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 수정 삭제를 오른쪽 끝에 위치시키기 -->
+                  <div class="flex gap-2 text-center justify-center item-center text-sm">
+                    <p class="flex-shrink-0">수정</p>
+                    <p class="flex-shrink-0">삭제</p>
+                  </div>
+                </div>
+                <div class="my-4">
+                  <hr class="border-t-1 border-gray-300" />
                 </div>
               </div>
             </div>
-            <!-- 수정 삭제를 오른쪽 끝에 위치시키기 -->
-            <div class="flex gap-2 text-center justify-center item-center text-sm">
-              <p class="flex-shrink-0">수정</p>
-              <p class="flex-shrink-0">삭제</p>
-            </div>
-          </div>
-          <div class="my-4">
-            <hr class="border-t-1 border-gray-300" />
-          </div>
-
-          <!--글내용2 반복 적용되면 지우기-->
-          <div class="flex items-center justify-between w-full">
-            <div class="flex gap-3 items-center w-full">
-              <input type="checkbox" class="form-checkbox" />
-              <div class="flex flex-col">
-                <p class="text-sm text-gray-700 mb-1">작성 YYYY.MM.DD</p>
-                <div class="flex">
-                  <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2">지역</div>
-                  <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">[모집합니다] 제목</p>
-                </div>
-              </div>
-            </div>
-            <div class="flex gap-2 text-center justify-center item-center text-sm">
-              <p class="flex-shrink-0">수정</p>
-              <p class="flex-shrink-0">삭제</p>
-            </div>
-          </div>
-          <div class="my-4">
-            <hr class="border-t-1 border-gray-300" />
-          </div>
-          <!--글내용2 반복 적용되면 지우기-->
+          </RouterLink>
         </div>
       </div>
     </div>
@@ -98,6 +82,8 @@
 
 <script setup>
 import { getPositions, getTechstacks } from '@/api/projectApi';
+import { userboards } from '@/api/userApi';
+import { useUserStore } from '@/store/userStore';
 import { ref, watchEffect } from 'vue';
 
 // 포지션 데이터 가져오기
@@ -137,9 +123,32 @@ const selelctTechstacks = async () => {
   }
 };
 
+const boardsarr = ref([]);
+
+// user_id 가져오기
+const useStore = useUserStore();
+// console.log('user_id: ', useStore.userId);
+
+const myboards = async () => {
+  try {
+    const res = await userboards(useStore.userId);
+    console.log('myboards response: ', res);
+
+    // 데이터 구조 확인 후, boardsarr에 할당
+    if (Array.isArray(res.result)) {
+      boardsarr.value = res.result;
+    } else {
+      console.error('res, data, result 확인해보기: ', res);
+    }
+  } catch (error) {
+    console.error('내가 작성한 게시물 가져오기 에러: ', error);
+  }
+};
+
 watchEffect(() => {
   selectPositions();
   selelctTechstacks();
+  myboards();
 });
 </script>
 
