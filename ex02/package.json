@@ -39,6 +39,7 @@
     "eslint-plugin-vue": "^9.23.0",
     "postcss": "^8.4.47",
     "prettier": "^3.2.5",
+    "sass-embedded": "^1.80.6",
     "tailwindcss": "^3.4.13",
     "vite": "^5.3.1",
     "vue-svg-loader": "^0.16.0"

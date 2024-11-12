@@ -32,7 +32,7 @@ export const getProjectView = async (board_id) => {
   }
 };
 
-// 프로젝트 총 페이지수
+// 프로젝트 총 페이지 수
 export const totalPage = async () => {
   try {
     const res = await axios.get(`${url}/total-boards`);
@@ -49,24 +49,6 @@ export const saveProject = async (formData) => {
   // console.log('토큰: ', localStorage.getItem('token'));
   try {
     const res = await axios.post(`${url}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    return res;
-  } catch (e) {
-    console.log('저장 Api 에러 발생:', e.response ? e.response.data : e.message);
-    // console.log(res.data);
-    return e;
-  }
-};
-
-export const updateProject = async (board_id, formData) => {
-  // console.log('저장axios 호출');
-  // console.log('토큰: ', localStorage.getItem('token'));
-  try {
-    const res = await axios.put(`${url}/${board_id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('token')}`

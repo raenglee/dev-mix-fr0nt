@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     profile(data) {
       this.loginCheck = true;
-      this.userId = data.userId; 
+      this.userId = data.id; 
       this.nickname = data.nickname; 
       this.email = data.email; 
       this.groupName = data.groupName; 
@@ -40,14 +40,6 @@ export const useUserStore = defineStore('user', {
       this.techStackList = '';
       this.profileImage = '';
       localStorage.removeItem('token');
-    },
-    
-    login(data) {
-      this.loginCheck = true;
-      this.nickname = data.nickname; 
-      this.username = data.username; 
-      this.email = data.email; 
-      this.role = data.role;
     }
   },
   persist: true
