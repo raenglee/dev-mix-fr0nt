@@ -47,7 +47,6 @@ const loadUserProfile = async () => {
   }
 };
 
-
 const getProfileImageUrl = (profileImage) => {
   if (!profileImage) return '';  // 프로필 이미지가 없으면 빈 문자열 반환
   
