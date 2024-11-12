@@ -177,7 +177,7 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue';
 import { FontAwesomeIcon } from '@/assets/FontAwesome';
-import { getPositions, saveProject, getTechstacks, getLocation, getProjectView } from '@/api/projectApi';
+import { getPositions, getTechstacks, getLocation, getProjectView, updateProject } from '@/api/projectApi';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -409,7 +409,7 @@ const save = async () => {
   // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
   // console.log('저장내용', data);
-  const res = await saveProject(formData);
+  const res = await updateProject(boardId, formData);
   
   console.log(JSON.stringify(formData));
   if (res.status === 200) {

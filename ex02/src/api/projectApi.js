@@ -62,6 +62,24 @@ export const saveProject = async (formData) => {
   }
 };
 
+export const updateProject = async (board_id, formData) => {
+  // console.log('저장axios 호출');
+  // console.log('토큰: ', localStorage.getItem('token'));
+  try {
+    const res = await axios.put(`${url}/${board_id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return res;
+  } catch (e) {
+    console.log('저장 Api 에러 발생:', e.response ? e.response.data : e.message);
+    // console.log(res.data);
+    return e;
+  }
+};
+
 // 프로젝트 삭제
 export const deleteProject = async (board_id) => {
   try {
