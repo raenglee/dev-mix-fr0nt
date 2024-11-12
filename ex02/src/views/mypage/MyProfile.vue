@@ -34,6 +34,7 @@
 </template>
 
 <script setup>
+import { getPositions, getTechstacks } from '@/api/projectApi';
 import { loginUsers } from '@/api/loginApi';
 import { ref, watchEffect } from 'vue';
 import { useUserStore } from '@/store/userStore';
@@ -53,18 +54,6 @@ const loadUserProfile = async () => {
   }
 };
 
-<<<<<<< HEAD
-const getProfileImageUrl = (profileImage) => {
-  if (!profileImage) return '';  // 프로필 이미지가 없으면 빈 문자열 반환
-  
-  // 파일명과 MIME 타입을 분리
-  const fileName = useStore.profileImage
-  
-  // 실제 이미지 URL을 반환 (서버에서 이미지 URL을 반환하는 방식에 맞게 처리)
-  // 예: 서버 URL로 변경 또는 Blob URL 생성 (여기서는 예시로 'images/' 경로를 사용)
-  return `http://localhost:8080/file/images/${fileName}`;
-}
-=======
 // const getProfileImageUrl = (profileImage) => {
 //   if (!profileImage) return ''; // 프로필 이미지가 없으면 빈 문자열 반환
 
@@ -75,15 +64,47 @@ const getProfileImageUrl = (profileImage) => {
 //   // 예: 서버 URL로 변경 또는 Blob URL 생성 (여기서는 예시로 'images/' 경로를 사용)
 //   return `http://localhost:8080/file/images/${fileName}`;
 // };
->>>>>>> kce
 
 // 포지션 데이터 가져오기
 
 
+const selectPositions = async () => {
+  try {
+    const res = await getPositions();
+    // console.log('updatePsotions 데이터 확인: ', res);
+    if (Array.isArray(res.data.result)) {
+      // positionOptions.value = res.data.result;
+    } else {
+      console.error('분야별 모집 인원 배열 저장 에러', res);
+    }
+  } catch (error) {
+    console.error('실패:', error);
+  }
+};
+
+const selelctTechstacks = async () => {
+  try {
+    const res = await getTechstacks();
+    // console.log('updateTechstacks 데이터 확인: ', res);
+    // techOptions.value = res.result;
+    if (Array.isArray(res.data.result)) {
+      // techOptions.value = res.data.result.map((item) => ({
+      //   techStackName: item.techStackName,
+      //   imageUrl: item.imageUrl
+      // }));
+    } else {
+      console.error('기술/언어 배열 저장 에러', res);
+    }
+  } catch (error) {
+    console.error('실패:', error);
+  }
+};
+
 watchEffect(() => {
   loadUserProfile();
-
-});
+  selectPositions();
+  selelctTechstacks();
+});;
 </script>
 
 <style lang="scss" scoped></style>
