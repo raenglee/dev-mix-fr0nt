@@ -228,7 +228,7 @@ const files = ref([]);
 watchEffect(async () => {
   const res = await getProjectView(route.params.board_id);
   if (res.status == 200) {
-    console.log('게시글 정보', res.data.result);
+    // console.log('게시글 정보', res.data.result);
     title.value = res.data.result.title;
     content.value = res.data.result.content;
     location.value = res.data.result.location;
@@ -295,7 +295,7 @@ const commentsave = async () => {
   const data = {
     content: commentContent.value
   };
-  console.log('댓글 내용', JSON.stringify(data));
+  // console.log('댓글 내용', JSON.stringify(data));
   const res = await saveComments(board_id.value, data);
   if (res.status === 200) {
     alert('댓글이 작성되었습니다.');

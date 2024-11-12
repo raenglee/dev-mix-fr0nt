@@ -71,7 +71,7 @@ const router = createRouter({
       component: ProjectCreate
     },
     {
-      path: '/projectupdate',
+      path: '/projectupdate/:board_id',
       name: 'projectupdate',
       component: ProjectUpdate
     },

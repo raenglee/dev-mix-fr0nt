@@ -350,7 +350,7 @@ const commentsave = async () => {
 const data = {
 content: commentContent.value
 };
-console.log('댓글 내용', JSON.stringify(data));
+// console.log('댓글 내용', JSON.stringify(data));
 const res = await saveComments(board_id.value, data);
 if (res.status === 200) {
 alert('댓글이 작성되었습니다.');

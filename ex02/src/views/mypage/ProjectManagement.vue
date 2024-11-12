@@ -17,7 +17,8 @@
                   <!-- 내용 텍스트, 말줄임표 적용 -->
                   <div class="flex flex-col w-full">
                     <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
-                    <div class="flex justify-between items-center w-full"> <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
+                    <div class="flex justify-between items-center w-full">
+                      <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
                       <div class="flex items-center">
                         <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
                         <RouterLink to="/projectview/:board_id" class="flex gap-2">

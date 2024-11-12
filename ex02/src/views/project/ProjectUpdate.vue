@@ -84,6 +84,7 @@
           <span class="text-gray-500 text-xs text-center">중복 불가, 분야별 최대 5인 까지</span>
         </h1>
       </div>
+
       <div>
         <div v-for="(position, index) in positions" :key="index" class="flex items-center space-x-7 mb-3">
           <!-- 포지션 선택 부분 -->
@@ -129,6 +130,14 @@
             </button>
           </div>
         </div>
+        <div class="flex flex-col item-center h-auto">
+          <h1 class="font-bold text-lg pb-2 text-gray-800">진행 기간(임시)</h1>
+          <select v-model="recruitmentStatus" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
+            <option disabled value="">{{ recruitmentStatus ? recruitmentStatus : '모집 상태' }}</option>
+            <option>RECRUITING</option>
+            <option>COMPLETED</option>
+          </select>
+        </div>
       </div>
 
       <!--구분선-->
@@ -154,20 +163,28 @@
             <FontAwesomeIcon icon="fa-solid fa-image" size="2xl" />
             사진을 드래그하거나 클릭하여 첨부하세요.
           </p>
+
+          <!-- 파일이 첨부되었을 때 -->
           <div v-else>
+            <!-- 첨부된 파일 이름 -->
             <p class="text-center text-gray-500 cursor-pointer my-2">{{ file.name }}</p>
+
+            <!-- 이미지 미리보기 (이미지 파일일 경우만) -->
             <img v-if="file && file.type.startsWith('image')" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
+
+            <!-- 이미지 삭제 버튼 -->
           </div>
         </div>
 
-        <!-- input type file 숨기기 -->
+        <!-- 숨겨진 파일 input -->
         <input ref="fileInput" type="file" @change="onFileChange" style="display: none" />
       </div>
+      <button v-if="file" @click="removeFile" class="text-red-500 mt-2 block mx-auto">이미지 삭제</button>
 
       <!-- 취소, 등록 버튼 -->
       <div class="flex justify-center space-x-4 pt-4 mt-5 mb-5">
         <button type="button" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-gray-300 hover:text-black hover:border-gray-300" @click="cancel">취소</button>
-        <button type="submit" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="save">등록</button>
+        <button type="submit" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">등록</button>
       </div>
     </div>
     <!--프로젝트 생성 선택 구간 끝-->
@@ -346,20 +363,27 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
+// 파일 삭제 처리
+const removeFile = () => {
+  file.value = null; // file을 null로 설정하여 삭제 처리
+};
+
 // 게시글 등록
 const title = ref('');
 const content = ref('');
 const location = ref('');
 const project_period = ref('');
 const recruit_end_date = ref('');
+const recruitmentStatus = ref('');
 
 const boardId = route.params.board_id;
 
 // 게시글 정보 가져오기
 const getProjectData = async () => {
   try {
-    const res = await getProjectView(boardId); // 게시글 정보를 API에서 가져오기
-    console.log(res.data.result);
+    const res = await getProjectView(boardId); // 게시글 정보 API 가져오기
+    // console.log(res.data.result);
+    // console.log(JSON.stringify(res.data.result));
     const project = res.data.result;
 
     // 가져온 데이터로 초기화
@@ -381,44 +405,83 @@ const getProjectData = async () => {
       requiredCount: positions.requiredCount
     }));
 
-    // 파일 설정 (이미 첨부된 파일이 있다면 미리보기)
-    file.value = project.boardImage ? project.boardImage : null;
+     // 기존 첨부된 파일이 있다면 파일 설정
+     if (project.boardImage) {
+      file.value = project.boardImage; // 기존 파일을 file에 저장
+    } else {
+      file.value = null; // 파일이 없으면 null로 설정
+    }
   } catch (error) {
     console.error('게시글 정보 불러오기 실패:', error);
   }
 };
 
 // 수정 완료 함수
-const save = async () => {
-  const data = {
+const doUpdate = async () => {
+  // FormData에 프로젝트 데이터 추가
+  const formData = new FormData();
+  formData.append('updateBoardRequest', new Blob([JSON.stringify({
     title: title.value,
     content: content.value,
     projectPeriod: project_period.value,
     location: location.value,
     recruitEndDate: recruit_end_date.value,
     boardTechStackList: selectedSkills.value,
-    boardPositionList: positions.value
-  };
+    boardPositionList: positions.value,
+    recruitmentStatus: recruitmentStatus.value
+  })], { type: 'application/json' }));
+  if (file.value) {
+    formData.append('boardImage', file.value); // 파일 추가
+  } else {
+    formData.append('boardImage', ''); // 파일이 없을 경우 빈 값 추가
+  }
 
-  const formData = new FormData();
-  formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-  formData.append('boardImage', file.value);
+  try {
+    // 프로젝트 업데이트 API 호출
+    const res = await updateProject(boardId, formData);
+    if (res.status === 200) {
+      alert('글이 수정되었습니다.');
+      router.push({ name: 'projectlist' });
+    }
+  } catch (error) {
+    console.error('프로젝트 수정 실패:', error);
+    alert('수정 중 오류가 발생했습니다.');
+  }
+};
+// const doUpdate = async () => {
+  // const data = {
+  //   title: title.value,
+  //   content: content.value,
+  //   projectPeriod: project_period.value,
+  //   location: location.value,
+  //   recruitEndDate: recruit_end_date.value,
+  //   boardTechStackList: selectedSkills.value,
+  //   boardPositionList: positions.value,
+  //   recruitmentStatus: recruitmentStatus.value
+  // };
+  // console.log(JSON.stringify(data));
+
+  // const formData = new FormData();
+  // formData.append('updateBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  // formData.append('boardImage', file.value);
+
   // console.log('파일정보', file.value);
 
   // const formData = new FormData();
   // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
   // console.log('저장내용', data);
-  const res = await updateProject(boardId, formData);
-  
-  console.log(JSON.stringify(formData));
-  if (res.status === 200) {
-    alert('글이 수정되었습니다.');
-    router.push({ name: 'projectlist' });
-    return;
-  }
-  alert('빈 항목이 없어야 합니다');
-};
+
+//   const res = await updateProject(boardId, formData);
+
+//   console.log(JSON.stringify(formData));
+//   if (res.status === 200) {
+//     alert('글이 수정되었습니다.');
+//     router.push({ name: 'projectlist' });
+//     return;
+//   }
+//   alert('빈 항목이 없어야 합니다');
+// };
 
 // 게시글 등록 취소
 const cancel = () => {

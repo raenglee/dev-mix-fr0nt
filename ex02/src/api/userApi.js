@@ -64,7 +64,7 @@ export const usercomments = async (user_id) => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     });
-    console.log('내가 작성한 댓글 Api', res);
+    // console.log('내가 작성한 댓글 Api', res);
     return res.data;
   } catch (err) {
     console.error(err);
