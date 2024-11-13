@@ -21,10 +21,10 @@
                       <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
                       <div class="flex items-center">
                         <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
-                        <RouterLink to="/projectview/:board_id" class="flex gap-2">
+                        <div class="flex gap-2 cursor-pointer" @click="viewPage(board.boardId)">
                           <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">{{ board.title }}</p>
                           <p class="text-[#d10000]">[{{ board.commentCount }}]</p>
-                        </RouterLink>
+                        </div>
                       </div>
                       <!-- 수정 삭제를 제목과 댓글 수 오른쪽 끝에 위치시키기 -->
                       <div class="flex gap-3 text-center justify-center items-center text-sm">
@@ -147,6 +147,13 @@ const myboards = async () => {
   } catch (error) {
     console.error('내가 작성한 게시물 가져오기 에러: ', error);
   }
+};
+
+// 각 게시글과 연결
+const viewPage = (board_id) => {
+  console.log('보드아이디', board_id);
+  const data = { name: 'projectview', params: { board_id: board_id } };
+  router.push(data);
 };
 
 // 게시글 삭제

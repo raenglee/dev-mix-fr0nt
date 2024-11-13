@@ -70,23 +70,21 @@
           <div class="flex flex-col col-span-3 items-center pt-5">
             <p class="font-bold text-lg w-full">기술 / 언어</p>
             <div class="flex items-center w-full">
-              <!-- <div class="py-2 space-x-5" v-for="tech in techStacks" :key="tech">
+              <div class="py-2 space-x-5" v-for="tech in techStacks" :key="tech">
                 <img :src="tech.imageUrl" class="w-10 h-10" />
                 <span class="text-sm">{{ tech.techStackName }}</span>
-              </div> -->
+              </div>
               <!--말줄임-->
-              <div class="py-2 space-x-5 flex items-center">
-                <!-- 최대 4개까지만 아이템을 출력하고 나머지는 '...'으로 표시 -->
+              <!-- <div class="py-2 space-x-5 flex items-center">
                 <div v-for="tech in techStacks.slice(0, 4)" :key="tech.id" class="inline-flex flex-col items-center space-x-2">
                   <img :src="tech.imageUrl" class="w-10 h-10" />
                   <span class="text-sm">{{ tech.techStackName }}</span>
                 </div>
 
-                <!-- 4개 이상의 항목이 있을 경우 '...' 표시 -->
                 <div v-if="techStacks.length > 4" class="inline-flex items-center space-x-2">
                   <span class="text-sm text-gray-400">...</span>
                 </div>
-              </div>
+              </div> -->
               <!--ㅎㅎ-->
             </div>
           </div>
