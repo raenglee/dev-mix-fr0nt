@@ -94,7 +94,7 @@
           </select>
 
           <!-- 사람 수 조절 버튼 -->
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center gap-1">
             <button type="button" @click="decreaseCount(index)" class="text-gray-400 w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center active:bg-gray-400 active:text-white">
               <FontAwesomeIcon icon="fa-solid fa-minus" size="sm" class="" />
             </button>
@@ -109,7 +109,7 @@
           </div>
 
           <!-- 삭제 버튼: 첫 번째 항목에서는 비활성화 -->
-          <div class="flex space-x-4">
+          <div class="flex gap-3">
             <button
               type="button"
               @click="removePosition(index)"
@@ -130,8 +130,8 @@
             </button>
           </div>
         </div>
-        <div class="flex flex-col item-center h-auto">
-          <h1 class="font-bold text-lg pb-2 text-gray-800">진행 기간(임시)</h1>
+        <div class="flex flex-col item-center h-auto mt-5">
+          <h1 class="font-bold text-lg pb-2 text-gray-800">모집 상태</h1>
           <select v-model="recruitmentStatus" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
             <option disabled value="">{{ recruitmentStatus ? recruitmentStatus : '모집 상태' }}</option>
             <option>RECRUITING</option>
@@ -166,20 +166,23 @@
 
           <!-- 파일이 첨부되었을 때 -->
           <div v-else>
-            <!-- 첨부된 파일 이름 -->
-            <p class="text-center text-gray-500 cursor-pointer my-2">{{ file.name }}</p>
+            <!-- 텍스트와 아이콘을 중앙 정렬하고 옆에 아이콘을 배치 -->
+            <div class="flex items-center justify-center space-x-1 mb-2">
+              <!-- file.name을 중앙 정렬하고, 아이콘은 그 옆에 붙여 배치 -->
+              <p class="text-center text-gray-500 cursor-pointer flex-shrink-0">{{ file.name }}</p>
+              <!-- 삭제 아이콘 -->
+              <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
+                <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
+              </button>
+            </div>
+            <!-- 파일 미리보기 -->
+            <img v-if="file && filePreviewUrl" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
 
-            <!-- 이미지 미리보기 (이미지 파일일 경우만) -->
-            <img v-if="file && file.type.startsWith('image')" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
-
-            <!-- 이미지 삭제 버튼 -->
           </div>
         </div>
-
         <!-- 숨겨진 파일 input -->
         <input ref="fileInput" type="file" @change="onFileChange" style="display: none" />
       </div>
-      <button v-if="file" @click="removeFile" class="text-red-500 mt-2 block mx-auto">이미지 삭제</button>
 
       <!-- 취소, 등록 버튼 -->
       <div class="flex justify-center space-x-4 pt-4 mt-5 mb-5">
@@ -324,51 +327,6 @@ const decreaseCount = (index) => {
 };
 
 // 게시글 원래 정보 가져오기
-
-//파일 첨부 및 저장
-const file = ref(null); // 선택된 파일
-const fileList = ref([]); // 여러 파일을 담을 리스트
-const selectedFile = ref(null); // 드롭드래그에서 선택된 파일
-const fileInput = ref(null); // 파일 입력을 위한 ref
-
-// 파일 미리보기
-const filePreviewUrl = computed(() => {
-  // file이 존재하고 이미지일 경우 미리보기 URL을 생성
-  return file.value ? URL.createObjectURL(file.value) : '';
-});
-
-// 파일 선택 후 처리
-const onFileChange = (event) => {
-  const selected = event.target.files[0];
-  if (selected) {
-    file.value = selected;
-    fileList.value.push(selected); // 파일 리스트에 추가
-    selectedFile.value = selected.name; // 드롭다운 기본값 설정
-  }
-};
-
-// 파일 드래그 앤 드롭 시 처리
-const dropFile = (event) => {
-  event.preventDefault();
-  const droppedFiles = event.dataTransfer.files;
-  if (droppedFiles.length > 0) {
-    file.value = droppedFiles[0]; // 첫 번째 파일을 선택
-    fileList.value.push(file.value); // 파일 리스트에 추가
-    selectedFile.value = file.value.name; // 드롭다운 기본값 설정
-  }
-};
-
-// 파일 input 클릭 트리거
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
-
-// 파일 삭제 처리
-const removeFile = () => {
-  file.value = null; // file을 null로 설정하여 삭제 처리
-};
-
-// 게시글 등록
 const title = ref('');
 const content = ref('');
 const location = ref('');
@@ -376,14 +334,19 @@ const project_period = ref('');
 const recruit_end_date = ref('');
 const recruitmentStatus = ref('');
 
+//파일 첨부
+const file = ref(''); // 선택된 파일
+const selectedFile = ref(null); // 드롭드래그에서 선택된 파일
+const fileInput = ref(null); // 파일 입력을 위한 ref
+
 const boardId = route.params.board_id;
 
 // 게시글 정보 가져오기
 const getProjectData = async () => {
   try {
     const res = await getProjectView(boardId); // 게시글 정보 API 가져오기
-    // console.log(res.data.result);
-    // console.log(JSON.stringify(res.data.result));
+    // console.log('원래 게시물 정보 가져오기', res.data.result);
+    // console.log('원래 게시물 정보 Json', JSON.stringify(res.data.result));
     const project = res.data.result;
 
     // 가져온 데이터로 초기화
@@ -392,6 +355,7 @@ const getProjectData = async () => {
     location.value = project.location;
     project_period.value = project.projectPeriod;
     recruit_end_date.value = project.endDate;
+    recruitmentStatus.value = project.recruitmentStatus;
 
     // 기술 스택 설정
     selectedSkills.value = project.techStackDtoList.map((skill) => ({
@@ -405,22 +369,65 @@ const getProjectData = async () => {
       requiredCount: positions.requiredCount
     }));
 
-     // 기존 첨부된 파일이 있다면 파일 설정
-     if (project.boardImage) {
-      file.value = project.boardImage; // 기존 파일을 file에 저장
+    // 기존 첨부된 파일이 있다면 파일 설정
+    if (project.imageUrl) {
+      file.value = project.imageUrl; // 기존 이미지 URL을 file에 저장
     } else {
       file.value = null; // 파일이 없으면 null로 설정
     }
+    console.log('기존 게시글 이미지 URL', file.value); // file.value가 제대로 할당되었는지 확인
   } catch (error) {
     console.error('게시글 정보 불러오기 실패:', error);
   }
 };
 
+//이미지 미리보기
+const filePreviewUrl = computed(() => {
+  // file이 File 객체인 경우: 파일로부터 미리보기 URL을 생성
+  if (file.value && file.value instanceof File) {
+    return URL.createObjectURL(file.value);
+  }
+  // file이 문자열인 경우 (기존에 서버에서 받아온 이미지 URL)
+  if (typeof file.value === 'string') {
+    return file.value;
+  }
+  // 그 외에는 빈 문자열 반환
+  return '';
+});
+
+
+// 파일 선택 후 처리
+const onFileChange = (event) => {
+  const selected = event.target.files[0];
+  if (selected) {
+    file.value = selected;
+    selectedFile.value = selected.name; // 드롭다운 기본값 설정
+  }
+};
+
+// 파일 드래그 앤 드롭 시 처리
+const dropFile = (event) => {
+  event.preventDefault();
+  const droppedFiles = event.dataTransfer.files;
+  if (droppedFiles.length > 0) {
+    file.value = droppedFiles[0]; // 첫 번째 파일을 선택
+    selectedFile.value = file.value.name; // 드롭다운 기본값 설정
+  }
+};
+
+// 파일 input 클릭 트리거
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+// 파일 삭제
+const removeFile = () => {
+  file.value = null;
+};
+
 // 수정 완료 함수
 const doUpdate = async () => {
-  // FormData에 프로젝트 데이터 추가
-  const formData = new FormData();
-  formData.append('updateBoardRequest', new Blob([JSON.stringify({
+  const data = {
     title: title.value,
     content: content.value,
     projectPeriod: project_period.value,
@@ -429,59 +436,26 @@ const doUpdate = async () => {
     boardTechStackList: selectedSkills.value,
     boardPositionList: positions.value,
     recruitmentStatus: recruitmentStatus.value
-  })], { type: 'application/json' }));
-  if (file.value) {
-    formData.append('boardImage', file.value); // 파일 추가
-  } else {
-    formData.append('boardImage', ''); // 파일이 없을 경우 빈 값 추가
-  }
+  };
+  console.log(JSON.stringify(data));
 
-  try {
-    // 프로젝트 업데이트 API 호출
-    const res = await updateProject(boardId, formData);
-    if (res.status === 200) {
-      alert('글이 수정되었습니다.');
-      router.push({ name: 'projectlist' });
-    }
-  } catch (error) {
-    console.error('프로젝트 수정 실패:', error);
-    alert('수정 중 오류가 발생했습니다.');
+  const formData = new FormData();
+  formData.append('updateBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  formData.append('boardImage', file.value);
+
+  console.log('저장내용', data);
+  console.log('파일정보', file.value);
+
+  const res = await updateProject(boardId, formData);
+
+  console.log(JSON.stringify(formData));
+  if (res.status === 200) {
+    alert('글이 수정되었습니다.');
+    router.push({ name: 'projectlist' });
+    return;
   }
+  alert('빈 항목이 없어야 합니다');
 };
-// const doUpdate = async () => {
-  // const data = {
-  //   title: title.value,
-  //   content: content.value,
-  //   projectPeriod: project_period.value,
-  //   location: location.value,
-  //   recruitEndDate: recruit_end_date.value,
-  //   boardTechStackList: selectedSkills.value,
-  //   boardPositionList: positions.value,
-  //   recruitmentStatus: recruitmentStatus.value
-  // };
-  // console.log(JSON.stringify(data));
-
-  // const formData = new FormData();
-  // formData.append('updateBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-  // formData.append('boardImage', file.value);
-
-  // console.log('파일정보', file.value);
-
-  // const formData = new FormData();
-  // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-
-  // console.log('저장내용', data);
-
-//   const res = await updateProject(boardId, formData);
-
-//   console.log(JSON.stringify(formData));
-//   if (res.status === 200) {
-//     alert('글이 수정되었습니다.');
-//     router.push({ name: 'projectlist' });
-//     return;
-//   }
-//   alert('빈 항목이 없어야 합니다');
-// };
 
 // 게시글 등록 취소
 const cancel = () => {
@@ -507,7 +481,6 @@ const minDate = computed(() => {
   return `${year}-${month}-${day}`; // 현재 날짜를 YYYY-MM-DD 형식으로 반환
 });
 
-// 이벤트 리스너
 watchEffect(() => {
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출

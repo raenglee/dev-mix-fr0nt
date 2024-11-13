@@ -3,7 +3,9 @@
     <section class="container mx-auto">
       <form @submit.prevent="handleSubmit" class="grid gap-y-5 px-20 py-10">
         <div class="justify-center items-center text-center space-y-3 pb-5">
-          <p class="border border-[#d10000] rounded-full w-16 text-center m-auto">모집중</p>
+          <p class="border border-[#d10000] rounded-full px-4 text-center m-auto inline-block">
+            {{ recruitmentStatus }}
+          </p>
           <h1 class="text-center font-bold text-2xl">{{ title }}</h1>
           <div class="flex space-x-2 items-center justify-center">
             <img src="/img/people.png" class="w-8 h-8" />
@@ -107,13 +109,10 @@
         <div class="flex justify-between mb-3 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
-            <button 
-            class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
-              수정
-            </button> <!--v-if="nickname == loggedInUserNickname" -->
-            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">
-              삭제
-            </button> <!--v-if="nickname == loggedInUserNickname" -->
+            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">수정</button>
+            <!--v-if="nickname == loggedInUserNickname" -->
+            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">삭제</button>
+            <!--v-if="nickname == loggedInUserNickname" -->
           </div>
         </div>
         <!-- 댓글 작성 -->
@@ -223,6 +222,7 @@ const viewCount = ref('');
 const nickname = ref('');
 const techStacks = ref([]);
 const positions = ref([]);
+const recruitmentStatus = ref('');
 const files = ref([]);
 
 watchEffect(async () => {
@@ -238,6 +238,7 @@ watchEffect(async () => {
     nickname.value = res.data.result.nickname;
     techStacks.value = res.data.result.techStackDtoList;
     positions.value = res.data.result.positionDtoList;
+    recruitmentStatus.value = res.data.result.recruitmentStatus;
     // console.log('기술스택확인', res.data.result.techStackDtoList);
     // console.log('포지션 배열 확인', res.data.result.positionDtoList);
     // console.log('이미지', res.data.result.imageUrl);

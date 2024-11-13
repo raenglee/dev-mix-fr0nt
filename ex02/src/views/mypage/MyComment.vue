@@ -20,7 +20,7 @@
                 <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
                   {{ comment.content }}
                 </p>
-                <p class="text-sm text-gray-500">글 제목</p>
+                <p class="text-sm text-gray-500">{{ comment.boardTitle }}</p>
               </div>
             </div>
 
