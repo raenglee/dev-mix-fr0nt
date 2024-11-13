@@ -107,10 +107,9 @@
         <div class="flex justify-between mb-3 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
-            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">수정</button>
-            <!--v-if="nickname == loggedInUserNickname" -->
-            <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">삭제</button>
-            <!--v-if="nickname == loggedInUserNickname" -->
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">수정</button>
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">삭제</button>
+         
           </div>
         </div>
         <!-- 댓글 작성 -->

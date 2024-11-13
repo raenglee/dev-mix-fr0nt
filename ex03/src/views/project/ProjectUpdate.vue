@@ -366,7 +366,8 @@ const getProjectData = async () => {
     // 모집 포지션 설정
     positions.value = project.positionDtoList.map((positions) => ({
       positionName: positions.positionName,
-      requiredCount: positions.requiredCount
+      requiredCount: positions.requiredCount,
+      currentCount: positions.currentCount
     }));
 
     // 기존 첨부된 파일이 있다면 파일 설정
