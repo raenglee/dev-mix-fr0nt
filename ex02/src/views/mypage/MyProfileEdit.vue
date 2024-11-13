@@ -13,7 +13,7 @@
               <img v-if="profileImage" :src="profileImage" class="w-full h-full rounded-full object-cover" id="profileImg" />
 
               <!-- profileImage가 없으면 기본 이미지 표시 -->
-              <img v-else src="/img/people.png" class="w-24 h-24 rounded-full " />
+              <img v-else src="/img/people.png" class="w-24 h-24 rounded-full" />
             </div>
           </div>
           <!-- 삭제 아이콘 -->
@@ -56,26 +56,31 @@
             </option>
           </select>
         </div> -->
-        <div class="grid grid-cols-5 items-center gap-x-4">
-          <h1 class="col-start-2 font-bold text-lg pb-2">지역</h1>
-          <select v-model="location" class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
-            <option value="" disabled>{{ location ? location : '지역을 선택하세요' }}</option>
-            <option>미정</option>
-            <option>서울</option>
-            <option>경기</option>
-            <option>인천</option>
-            <option>강원</option>
-            <option>대구/경북</option>
-            <option>대전/충청</option>
-            <option>부산/울산/경남</option>
-            <option>광주/전라</option>
-            <option>제주</option>
-          </select>
+        <div class="grid grid-cols-4 items-center gap-x-4">
+          
+          <h1 class="font-bold text-lg pb-2 ">지역</h1>
+          <div class="min-w-[450px] ">
+            <div class="col-start-2">
+            <select v-model="location" class="w-52  h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
+              <option value="" disabled>{{ location ? location : '지역을 선택하세요' }}</option>
+              <option>미정</option>
+              <option>서울</option>
+              <option>경기</option>
+              <option>인천</option>
+              <option>강원</option>
+              <option>대구/경북</option>
+              <option>대전/충청</option>
+              <option>부산/울산/경남</option>
+              <option>광주/전라</option>
+              <option>제주</option>
+            </select>
+          </div>
+         
         </div>
-
+      </div>
         <!-- 포지션 새로운거-->
         <div class="flex" ref="dropdownContainer">
-          <div class="w-44">
+          <div class="w-40">
             <h1 class="font-bold text-lg pb-2">포지션</h1>
           </div>
           <div class="border border-gray-200 rounded-lg min-w-[450px]">
@@ -99,8 +104,10 @@
         </div>
 
         <!--✅기술/언어 선택 -> 다중선택, 선택삭제 가능하도록-->
-        <div class="grid grid-cols-5 items-center gap-x-4" ref="dropdownContainer">
-          <h1 class="col-start-2 font-bold text-lg pb-2">기술 / 언어<br /><span class="text-sm mx-1">(최대 10개)</span></h1>
+        <div class="grid grid-cols-4 items-center gap-x-4" ref="dropdownContainer">
+          
+          <h1 class="font-bold text-lg pb-2 ">기술 / 언어<br /><span class="text-sm mx-1">(최대 10개)</span></h1>
+          <div class="min-w-[450px] ">
           <div class="relative w-full m-auto flex">
             <div @click="toggleDropdown" class="min-w-72 h-10 p-2 border border-gray-200 rounded-full cursor-pointer flex items-center justify-between">
               <span>{{ selectedSkill.value || '기술을 선택하세요' }}</span>
@@ -122,7 +129,7 @@
                 <span class="text-[#d10000] font-bold mx-3">x</span>
               </div>
             </div>
-          </div>
+          </div></div>
         </div>
 
         <!-- 버튼 -->
@@ -265,18 +272,19 @@ const handleSubmit = async () => {
 
   formData.append('userProfile', new Blob([JSON.stringify(userProfile)], { type: 'application/json; charset=UTF-8' }));
   console.log('폼데이터최종', JSON.stringify(userProfile));
-
+  
   try {
     await uploadprofile(formData); // formData 대신 userProfile 객체를 전달
     const data = await loginUsers();
     await useStore.profile(data.result); // 사용자 정보를 Pinia 스토어에 저장
-
+    
     alert('수정 되었습니다.');
     router.push('/mypage/myprofile'); // 성공 시 프로필 페이지로 이동
   } catch (err) {
     // 에러 처리
     alert('프로필 저장에 실패했습니다. 다시 시도해주세요.');
   }
+ 
 };
 
 // 기술 / 언어 데이터 연결

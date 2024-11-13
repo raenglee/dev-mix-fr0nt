@@ -40,3 +40,37 @@ export const userInfo = async (user_id) => {
   };
 
 
+
+// 내가 작성한 게시글
+export const userboards = async (user_id) => {
+  try {
+    const res = await axios.get(`${url}/${user_id}/boards`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    // console.log('내가 작성한 게시글 Api', res);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
+
+// 내가 작성한 댓글
+export const usercomments = async (user_id) => {
+  try {
+    const res = await axios.get(`${url}/${user_id}/comments`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    // console.log('내가 작성한 댓글 Api', res);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

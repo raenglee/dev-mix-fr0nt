@@ -59,23 +59,7 @@ export const checkNickname = async (nickname) => {
 
 
 
-// // 닉네임 중복 확인
-// export const checkNickname = async (nickname) => {
-//   try {
-//     const res = await axios.get(`${url}/api/v1/users/nickname-check`, {
-//       params: { nickname }, // 쿼리 파라미터로 닉네임 전달
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${localStorage.getItem('token')}`
-//       }
-//     });
-//     console.log('닉네임 중복 확인 결과:', res.data);
-//     return res.data; // 사용 가능 여부를 반환
-//   } catch (err) {
-//     console.error('닉네임 중복 확인 실패:', err);
-//     throw err; // 에러를 다시 던져서 호출자에게 전달
-//   }
-// };
+
 
 // 사용자 정보 삭제
 export const deleteUser = async () => {

@@ -8,8 +8,8 @@
       <p>{{ useStore.nickname }}님</p>
       <p class="text-sm text-gray-400">{{ useStore.email }}</p>
       <div class="flex justify-center text-center py-3">
-        <RouterLink to="/myprofileedit"><button class="border border-gray-300 rounded-md py-1 px-3 mx-1">프로필 수정</button> </RouterLink>
-        <button class="border border-gray-300 rounded-md py-1 px-2">공유</button>
+        <RouterLink to="/myprofileedit"><button class="border bg-white border-gray-300 rounded-md py-1 px-3 mx-1">프로필 수정</button> </RouterLink>
+        <button class="border border-gray-300 bg-white rounded-md py-1 px-2">공유</button>
       </div>
     </div>
 

@@ -36,13 +36,13 @@
               <!-- <button type="button" @click="checkNickname"
                 class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
             </div>
-            <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 또는 영어, 2~8글자 이하 (공백, 특수문자 X)</p>
+            <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 영어 숫자, 1~8글자 이하 (공백, 특수문자 X)</p>
           </div>
 
           <!-- 소속 -->
           <div class="grid grid-cols-5 items-center gap-x-4">
             <label class="col-start-2 text-gray-700 text-lg font-semibold">소속</label>
-            <input type="text" v-model="groupName" placeholder="그린대학교" class="px-4 col-span-2 border p-2 rounded-full w-full" />
+            <input type="text" v-model="groupName" class="px-4 col-span-2 border p-2 rounded-full w-full" />
           </div>
 
           <!--🌍지역드롭다운-->
@@ -375,6 +375,7 @@ watchEffect(() => {
 
 // 컴포넌트 언마운트 시 이벤트 리스너 제거
 onBeforeUnmount(() => {
+  
   document.removeEventListener('mousedown', handleClickOutside);
 });
 </script>

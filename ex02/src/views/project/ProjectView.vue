@@ -56,7 +56,7 @@
                   지원
                 </button>
 
-                <button v-else-if="!isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 bg-gray-300 cursor-not-allowed">
+                <button v-else-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 bg-gray-300 cursor-not-allowed">
                   승인대기
                 </button>
 
@@ -365,9 +365,9 @@ const confirmSubmit = async () => {
     position: positionName.value,
     note: note.value
   };
-
+console.log(data);
   try {
-    const res = await applyProject(route.params.board_id, data);
+    const res = await applyProject(route.params.board_id, data.value);
     if (res.status === 200) {
       isPending.value = true;
       closeModal(); // 기존 지원 모달 닫기

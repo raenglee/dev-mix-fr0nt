@@ -134,8 +134,8 @@
           <h1 class="font-bold text-lg pb-2 text-gray-800">모집 상태</h1>
           <select v-model="recruitmentStatus" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
             <option disabled value="">{{ recruitmentStatus ? recruitmentStatus : '모집 상태' }}</option>
-            <option>RECRUITING</option>
-            <option>COMPLETED</option>
+            <option>모집중</option>
+            <option>모집완료</option>
           </select>
         </div>
       </div>
