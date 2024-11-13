@@ -1,0 +1,101 @@
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: 'wdth' 100;
+}
+
+/*모달CSS*/
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: rgb(0, 0, 0, 0.3);
+  display: none;
+}
+.isModal {
+  display: block;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 1001;
+  display: none;
+}
+.isView {
+  display: block;
+}
+
+/* 모달 애니메이션 */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.5s ease; /* opacity, transform 애니메이션 */
+}
+
+/* 모달 열기 (처음 화면에 등장할 때 위에서 아래로 내려오는 애니메이션 + 튕기는 효과) */
+.modal-fade-enter {
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(-50px); /* 위에서 아래로 내려오는 시작 위치 */
+}
+
+/* 모달 열릴 때 (열릴 때 상태) */
+.modal-fade-enter-to {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0); /* 중앙으로 내려옴 */
+  animation: bounceIn 0.3s ease-out; /* 튕기는 효과 */
+}
+
+/* 모달 닫기 (아래에서 위로 올라가는 애니메이션) */
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(50px); /* 닫힐 때 아래로 올라감 */
+}
+
+/* 튕기는 효과 */
+@keyframes bounceIn {
+  0% {
+    transform: translate(-50%, -50%) translateY(-50px); /* 시작 위치 (살짝 위로) */
+  }
+  40% {
+    transform: translate(-50%, -50%) translateY(10px); /* 살짝 아래로 내려감 */
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(10px); /* 다시 살짝 위로 튕김 */
+  }
+  100% {
+    transform: translate(-50%, -50%) translateY(0); /* 최종 위치 (정상 위치) */
+  }
+}
+
+/*모달CSS*/
+
+/*프로젝트 카드 눌리는 효과*/
+
+.project-card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px); /* 살짝 위로 튕겨 나가는 효과 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+/*마이페이지 탭 호버 애니메이션*/
+.mypage-tab {
+  @apply transition-transform duration-300 transform hover:translate-y-[-5px] hover:bg-[#d1000020] hover:border-b-2 hover:border-[#d10000];
+}
