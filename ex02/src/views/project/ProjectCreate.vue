@@ -14,7 +14,7 @@
       <!--지역/구분, 진행 기간, 모집 마감일-->
       <div class="flex justify-between gap-5 mt-5 flex-wrap">
         <!--🌍지역 / 구분 드롭다운-->
-        
+
         <div class="flex flex-col">
           <h1 class="font-bold text-lg pb-2 text-gray-800">지역 / 구분<span class="text-[#d10000] mx-1">*</span></h1>
           <select v-model="location" class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
@@ -44,7 +44,7 @@
         <!-- 모집 마감일 -->
         <div class="flex flex-col">
           <h1 class="font-bold text-lg pb-2 text-gray-800">모집 마감일<span class="text-[#d10000] mx-1">*</span></h1>
-          <input v-model="recruit_end_date" type="date" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none" :min="minDate" required/>
+          <input v-model="recruit_end_date" type="date" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none" :min="minDate" required />
         </div>
       </div>
       <!--✅기술/언어 선택 -> 다중선택, 선택삭제 가능하도록-->
@@ -93,7 +93,7 @@
           </select>
 
           <!-- 사람 수 조절 버튼 -->
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center gap-1">
             <button type="button" @click="decreaseCount(index)" class="text-gray-400 w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center active:bg-gray-400 active:text-white">
               <FontAwesomeIcon icon="fa-solid fa-minus" size="sm" class="" />
             </button>
@@ -108,7 +108,7 @@
           </div>
 
           <!-- 삭제 버튼: 첫 번째 항목에서는 비활성화 -->
-          <div class="flex space-x-4">
+          <div class="flex gap-3">
             <button
               type="button"
               @click="removePosition(index)"
@@ -139,19 +139,32 @@
       <!--프로젝트 상세 소개-->
       <div>
         <h1 class="font-bold text-lg mb-3 text-gray-800">프로젝트 소개<span class="text-[#d10000] mx-1">*</span></h1>
-        <textarea v-model="content" class="w-full p-3 mb-2 h-96 border border-gray-200 rounded-md focus:outline-none ring-gray-300 resize-none text-gray-700 placeholder-gray-400 bg-white" required></textarea>
+        <textarea
+          v-model="content"
+          class="w-full p-3 mb-2 h-96 border border-gray-200 rounded-md focus:outline-none ring-gray-300 resize-none text-gray-700 placeholder-gray-400 bg-white"
+          required
+        ></textarea>
       </div>
 
       <!-- 파일 첨부 -->
       <div>
-        <!-- 드래그 앤 드롭 영역-->
+        <!-- 드래그 앤 드롭 영역 -->
         <div class="dropbox p-10 bg-gray-100 rounded-md" @dragover.prevent @drop.prevent="dropFile" @click="triggerFileInput">
           <p v-if="!file" class="text-center text-gray-500 cursor-pointer">
             <FontAwesomeIcon icon="fa-solid fa-image" size="2xl" />
             사진을 드래그하거나 클릭하여 첨부하세요.
           </p>
           <div v-else>
-            <p class="text-center text-gray-500 cursor-pointer my-2">{{ file.name }}</p>
+            <!-- 텍스트와 아이콘을 중앙 정렬하고 옆에 아이콘을 배치 -->
+            <div class="flex items-center justify-center space-x-1 mb-2">
+              <!-- file.name을 중앙 정렬하고, 아이콘은 그 옆에 붙여 배치 -->
+              <p class="text-center text-gray-500 cursor-pointer flex-shrink-0">{{ file.name }}</p>
+              <!-- 삭제 아이콘 -->
+              <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
+                <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
+              </button>
+            </div>
+            <!-- 이미지 미리보기 -->
             <img v-if="file && file.type.startsWith('image')" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
           </div>
         </div>
@@ -306,14 +319,14 @@ const decreaseCount = (index) => {
   }
 };
 
-//파일 첨부 및 저장
+// 파일 첨부 및 저장
 const file = ref(null); // 선택된 파일
-const fileList = ref([]); // 여러 파일을 담을 리스트
-const selectedFile = ref(null); // 드롭드래그에서 선택된 파일
+const selectedFile = ref(null); // 드래그 앤 드롭에서 선택된 파일의 이름
 const fileInput = ref(null); // 파일 입력을 위한 ref
 
+// 파일 미리보기 URL 생성
 const filePreviewUrl = computed(() => {
-  // file이 존재하고 이미지일 경우 미리보기 URL을 생성
+  // file이 존재할 경우 미리보기 URL을 생성
   return file.value ? URL.createObjectURL(file.value) : '';
 });
 
@@ -322,8 +335,7 @@ const onFileChange = (event) => {
   const selected = event.target.files[0];
   if (selected) {
     file.value = selected;
-    fileList.value.push(selected); // 파일 리스트에 추가
-    selectedFile.value = selected.name; // 드롭다운 기본값 설정
+    selectedFile.value = selected.name; // 파일 이름을 저장
   }
 };
 
@@ -333,14 +345,18 @@ const dropFile = (event) => {
   const droppedFiles = event.dataTransfer.files;
   if (droppedFiles.length > 0) {
     file.value = droppedFiles[0]; // 첫 번째 파일을 선택
-    fileList.value.push(file.value); // 파일 리스트에 추가
-    selectedFile.value = file.value.name; // 드롭다운 기본값 설정
+    selectedFile.value = file.value.name; // 파일 이름을 저장
   }
 };
 
 // 파일 input 클릭 트리거
 const triggerFileInput = () => {
   fileInput.value.click();
+};
+
+// 파일 삭제
+const removeFile = () => {
+  file.value = null;
 };
 
 // 게시글 등록
