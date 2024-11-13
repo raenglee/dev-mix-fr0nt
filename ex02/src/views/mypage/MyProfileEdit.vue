@@ -1,6 +1,6 @@
 <template>
-  <div class="m-auto w-full h-screen flex justify-center">
-    <div class="my-3" style="width: 900px">
+  <div class="m-auto w-full flex justify-center">
+    <div class="my-3 w-full" style="width: 900px">
       <!-- <div class="justify-center items-center"> -->
       <form @submit.prevent="handleSubmit" class="grid gap-y-6 px-20 py-10">
         <!-- 프로필 사진 -->
@@ -9,37 +9,67 @@
           <div class="col-span-2 flex items-center">
             <input type="file" @change="onFileChange" accept="image/*" class="hidden" ref="fileInput" placeholder="useStore.proFile.profileImage" />
             <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer" @click="selectFile">
+              <!-- profileImage가 존재하면 해당 이미지를 표시 -->
               <img v-if="profileImage" :src="profileImage" class="w-full h-full rounded-full object-cover" id="profileImg" />
-              <span v-else class="text-gray-500 text-2xl">+</span>
+
+              <!-- profileImage가 없으면 기본 이미지 표시 -->
+              <img v-else src="/img/people.png" class="w-24 h-24 rounded-full " />
             </div>
+          </div>
+          <!-- 삭제 아이콘 -->
+          <!-- <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
+                <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
+              </button> -->
+        </div>
+
+        <!--이메일-->
+        <div class="grid grid-cols-4 items-center gap-x-4">
+          <label class="text-gray-700 text-lg font-semibold">이메일 </label>
+          <div class="col-span-2 flex items-center">
+            <p class="flex-1p-2 rounded-full">{{ useStore.email }}</p>
+            <!-- <button type="button" @click="checkNickname"
+                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
           </div>
         </div>
         <!-- 닉네임 -->
         <div class="grid grid-cols-4 items-center gap-x-4">
           <label class="text-gray-700 text-lg font-semibold">닉네임 <span class="text-red-500">*</span></label>
           <div class="col-span-2 flex items-center">
-            <input type="text" v-model="nickname" placeholder="자모음 단일사용 불가" class="flex-1 border p-2 rounded-full" required />
+            <input type="text" v-model="nickname" placeholder="nickname" class="flex-1 border p-2 rounded-full" required />
             <button type="button" @click="checkNickname" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
-            <!-- <button type="button" @click="checkNickname"
-                class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
           </div>
           <p class="col-start-2 col-span-2 text-xs text-gray-500 mt-1">한글 또는 영어, 8글자 이하 (공백X)</p>
         </div>
-
         <!-- 소속 -->
         <div class="grid grid-cols-4 items-center gap-x-4">
           <label class="text-gray-700 text-lg font-semibold">소속</label>
-          <input type="text" v-model="groupName" placeholder="그린대학교" class="col-span-2 border p-2 h-10 rounded-full w-full" />
+          <input type="text" v-model="groupName" placeholder="" class="col-span-2 border p-2 h-10 rounded-full w-full" />
         </div>
 
         <!--🌍지역 / 구분 드롭다운-->
-        <div class="grid grid-cols-4 items-center gap-x-4">
+        <!-- <div class="grid grid-cols-4 items-center gap-x-4">
           <h1 class="font-bold text-lg pb-2">지역 / 구분</h1>
           <select v-model="location" class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
             <option disabled value="">지역 / 구분을 선택하세요</option>
             <option v-for="location in locationOptions" :key="location" :value="location">
               {{ location }}
             </option>
+          </select>
+        </div> -->
+        <div class="grid grid-cols-5 items-center gap-x-4">
+          <h1 class="col-start-2 font-bold text-lg pb-2">지역</h1>
+          <select v-model="location" class="w-52 h-10 p-2 border border-gray-200 rounded-full cursor-pointer focus:outline-none">
+            <option value="" disabled>{{ location ? location : '지역을 선택하세요' }}</option>
+            <option>미정</option>
+            <option>서울</option>
+            <option>경기</option>
+            <option>인천</option>
+            <option>강원</option>
+            <option>대구/경북</option>
+            <option>대전/충청</option>
+            <option>부산/울산/경남</option>
+            <option>광주/전라</option>
+            <option>제주</option>
           </select>
         </div>
 
@@ -57,9 +87,10 @@
                     type="checkbox"
                     :value="positionName.positionName"
                     :id="positionName.positionName"
-                    @change="positionList.push(positionName.positionName)"
+                    @change="handlePositionChange(positionName.positionName)"
                     class="cursor-pointer form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500"
                   />
+
                   <label class="cursor-pointer" :for="positionName.positionName">{{ positionName.positionName }}</label>
                 </div>
               </template>
@@ -129,7 +160,6 @@ const selectedSkills = ref([]); // 선택된 기술들의 배열
 const techOptions = ref([]); // 서버에서 전달 받은 기술 저장
 
 //🚹 분야별 모집 인원 관련 scripts
-const positions = ref([{ role: '', count: 1 }]); // 포지션 관리
 const roleOptions = ref([]); // 서버에서 전달 받은 포지션 저장
 const userProfile = ref(null);
 
@@ -150,19 +180,17 @@ const loadUserProfile = async () => {
     }));
 
     // 원래 있는 포지션 넣기
-    profile.result.positions.forEach((temp)=>{
+    profile.result.positions.forEach((temp) => {
       positionList.value.push(temp.positionName);
     });
-    
+
     selectedSkills.value = updatedTechStacks;
 
     const excludedTechStacks = [];
-    profile.result.techStacks.map((techStacks)=>{
+    profile.result.techStacks.map((techStacks) => {
       excludedTechStacks.push(techStacks.techStackName);
     });
-    const filteredTechStacks = availableTechOptions.value.filter(
-        stack => !excludedTechStacks.includes(stack.techStackName)
-    );
+    const filteredTechStacks = availableTechOptions.value.filter((stack) => !excludedTechStacks.includes(stack.techStackName));
     availableTechOptions.value = filteredTechStacks;
   } catch (error) {
     console.error('프로필 정보를 불러오는 데 실패했습니다.', error);
@@ -176,6 +204,11 @@ const onFileChange = (event) => {
     selectedFile.value = file; // 파일을 저장 (FormData에 첨부할 파일)
     profileImage.value = URL.createObjectURL(file); // 이미지 미리보기 URL을 설정
   }
+};
+
+// 파일 삭제
+const removeFile = () => {
+  profileImage.value = null;
 };
 
 // 파일 인풋을 열기 위한 메서드
@@ -239,26 +272,10 @@ const handleSubmit = async () => {
     await useStore.profile(data.result); // 사용자 정보를 Pinia 스토어에 저장
 
     alert('수정 되었습니다.');
-    router.push('/'); // 성공 시 프로필 페이지로 이동
+    router.push('/mypage/myprofile'); // 성공 시 프로필 페이지로 이동
   } catch (err) {
     // 에러 처리
     alert('프로필 저장에 실패했습니다. 다시 시도해주세요.');
-  }
-};
-// 🌍지역 / 구분 선택 관련 scripts
-const locationOptions = ref([]); // 서버에서 전달 받은 지역 저장
-
-const updateLocations = async () => {
-  try {
-    const res = await getLocation();
-    // console.log('updateLocations 데이터 확인: ', res.data);
-    if (Array.isArray(res.data.result)) {
-      locationOptions.value = res.data.result; // 목록이 이름 하나이므로 배열에 넣을 필요X
-    } else {
-      console.error('지역 / 구분 배열 저장 에러', res);
-    }
-  } catch (error) {
-    console.error('실패:', error);
   }
 };
 
@@ -308,12 +325,18 @@ const removeSkill = (index) => {
   }
 };
 
-const addPosition = () => {
-  positions.value.push({ role: '', count: 1 });
-};
+const handlePositionChange = (positionName) => {
+  // 체크된 경우
+  if (positionList.value.includes(positionName)) {
+    // 체크 해제된 경우, positionList에서 해당 포지션을 제거
+    positionList.value = positionList.value.filter((pos) => pos !== positionName);
+  } else {
+    // 체크된 경우, positionList에 해당 포지션을 추가
+    positionList.value.push(positionName);
+  }
 
-const removePosition = (index) => {
-  positions.value.splice(index, 1);
+  // 배열의 중복을 방지하기 위해 Set을 사용하여 중복된 항목을 제거
+  positionList.value = Array.from(new Set(positionList.value));
 };
 
 // 포지션 서버 연결
@@ -345,10 +368,8 @@ const handleClickOutside = (event) => {
 };
 
 watchEffect(() => {
-
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출
-  updateLocations(); // 지역 API 호출
 
   loadUserProfile();
 

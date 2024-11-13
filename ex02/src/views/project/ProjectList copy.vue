@@ -199,6 +199,126 @@
             </div>
           </div>
         </div>
+
+
+
+
+        <div class="m-auto w-full flex flex-col">
+      <!-- flex 컨테이너로 2개 항목을 가로로 정렬 -->
+      <div class="m-auto flex justify-center text-cente p-3 mb-2 w-full rounded-xl">
+        <!-- 첫 번째 카드: 소속 -->
+        <div class="border rounded-2xl p-4 project-card w-1/2">
+          <!-- 소속 텍스트 세로 중앙 정렬 및 가로 중앙 정렬 -->
+          <div class="top-4 flex items-center justify-center">
+            <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">포지션</div>
+          </div>
+          <!-- useStore.groupName 텍스트 세로 중앙 정렬 및 가로 중앙 정렬 -->
+          <div class="text-l mb-2 text-gray-800 flex justify-center items-center pt-5">
+            <template v-if="userProfile != null">
+              <div>
+                <span class="px-2" v-for="position in userProfile.positions" :key="position">
+                  {{ position.positionName }}
+                </span>
+              </div>
+            </template>
+          </div>
+        </div>
+          <div class="border rounded-2xl p-4 project-card w-1/2">
+
+          <!-- 지역 텍스트 세로 중앙 정렬 및 가로 중앙 정렬 -->
+          <div class="top-4 flex items-center justify-center">
+            <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
+          </div>
+
+          <!-- useStore.location 텍스트 세로 중앙 정렬 및 가로 중앙 정렬 -->
+          <div class="text-l mb-2 text-gray-800 flex justify-center items-center pt-5">
+            {{ useStore.location }}
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+ <div class="flex flex-col justify-center text-center">
+      <h2 class="font-bold text-xl">소속</h2>
+      <div class="py-2">{{ useStore.groupName }}</div>
+
+     
+
+      <h2 class="font-bold text-xl">포지션</h2>
+      <template v-if="userProfile != null">
+        <div>
+          <span class="px-2" v-for="position in userProfile.positions" :key="position">
+            {{ position.positionName }}
+          </span>
+        </div>
+      </template>
+      <h3 class="font-bold text-xl">지역</h3>
+      <div class="py-2">{{ useStore.location }}</div>
+      <h2 class="font-bold text-xl">기술 스택</h2>
+      <template v-if="userProfile != null">
+        <div class="flex space-x-5 justify-center">
+          <div class="py-2" v-for="tech in userProfile.techStacks" :key="tech">
+            <img :src="tech.techStackImageUrl" class="w-10 h-10" />
+            <span class="text-sm py-4">{{ tech.techStackName }}</span>
+          </div>
+        </div>
+      </template>
+    </div>
+
+
+
+
+        <p class="my-4 text-lg font-bold">내가 참여 중인 프로젝트</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-10">
+        <div class="cursor-pointer border rounded-2xl p-4 relative project-card">
+          <div class="top-4 flex items-center justify-between">
+            <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
+          </div>
+          <div class="text-sm mb-2 text-gray-800">모집 마감일 |</div>
+          <div class="text-xl font-bold mb-2 text-gray-800">제목</div>
+          <!--기술 아이콘-->
+          <div class="flex pt-2 gap-3 mb-1">
+            <div>
+              <!-- <img class="w-10 h-10" :src="tech.techStackImageUrl" /> -->
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <p class="flex-grow text-right text-sm py-2 text-gray-800">작성자</p>
+            <!-- <p class="flex-grow text-right text-sm py-2" v-else>&nbsp;</p> -->
+            <div class="flex justify-between items-center mt-3">
+              <!-- 인원 정보 (0 / 총 인원) -->
+              <div class="relative group">
+                <!-- 인원 0 / 총 인원 표시 -->
+                <div class="text-sm cursor-pointer text-gray-800">인원 남은 / 총인원</div>
+                <!-- 개별 인원 수 출력, 마우스를 올리면 나타나도록 -->
+                <div
+                  class="absolute z-10 bg-white left-14 bottom-2 p-2 shadow-lg rounded-xl mt-2 w-auto whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-300"
+                >
+                  <div class="text-sm my-1 m-auto"><span class="font-bold rounded-md px-1 text-gray-800"> 포지션명 -</span>요구인원수명</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </template>
       <!--프로젝트 글 박스 끝-->
 

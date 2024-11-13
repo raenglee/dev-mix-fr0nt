@@ -58,6 +58,7 @@ const router = createRouter({
           name: 'projectmanagement',
           component: ProjectManagement
         },
+        
         {
           path: '', // 기본 경로: /mypage
           name: 'default', // 이름 추가
@@ -71,7 +72,7 @@ const router = createRouter({
       component: ProjectCreate
     },
     {
-      path: '/projectupdate',
+      path: '/projectupdate/:board_id',
       name: 'projectupdate',
       component: ProjectUpdate
     },

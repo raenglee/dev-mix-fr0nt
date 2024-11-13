@@ -84,6 +84,7 @@
           <span class="text-gray-500 text-xs text-center">중복 불가, 분야별 최대 5인 까지</span>
         </h1>
       </div>
+
       <div>
         <div v-for="(position, index) in positions" :key="index" class="flex items-center space-x-7 mb-3">
           <!-- 포지션 선택 부분 -->
@@ -93,7 +94,7 @@
           </select>
 
           <!-- 사람 수 조절 버튼 -->
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center gap-1">
             <button type="button" @click="decreaseCount(index)" class="text-gray-400 w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center active:bg-gray-400 active:text-white">
               <FontAwesomeIcon icon="fa-solid fa-minus" size="sm" class="" />
             </button>
@@ -108,7 +109,7 @@
           </div>
 
           <!-- 삭제 버튼: 첫 번째 항목에서는 비활성화 -->
-          <div class="flex space-x-4">
+          <div class="flex gap-3">
             <button
               type="button"
               @click="removePosition(index)"
@@ -128,6 +129,14 @@
               추가
             </button>
           </div>
+        </div>
+        <div class="flex flex-col item-center h-auto mt-5">
+          <h1 class="font-bold text-lg pb-2 text-gray-800">모집 상태</h1>
+          <select v-model="recruitmentStatus" class="w-52 h-10 p-2 border border-gray-200 rounded-full focus:outline-none">
+            <option disabled value="">{{ recruitmentStatus ? recruitmentStatus : '모집 상태' }}</option>
+            <option>RECRUITING</option>
+            <option>COMPLETED</option>
+          </select>
         </div>
       </div>
 
@@ -154,20 +163,31 @@
             <FontAwesomeIcon icon="fa-solid fa-image" size="2xl" />
             사진을 드래그하거나 클릭하여 첨부하세요.
           </p>
+
+          <!-- 파일이 첨부되었을 때 -->
           <div v-else>
-            <p class="text-center text-gray-500 cursor-pointer my-2">{{ file.name }}</p>
-            <img v-if="file && file.type.startsWith('image')" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
+            <!-- 텍스트와 아이콘을 중앙 정렬하고 옆에 아이콘을 배치 -->
+            <div class="flex items-center justify-center space-x-1 mb-2">
+              <!-- file.name을 중앙 정렬하고, 아이콘은 그 옆에 붙여 배치 -->
+              <p class="text-center text-gray-500 cursor-pointer flex-shrink-0">{{ file.name }}</p>
+              <!-- 삭제 아이콘 -->
+              <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
+                <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
+              </button>
+            </div>
+            <!-- 파일 미리보기 -->
+            <img v-if="file && filePreviewUrl" :src="filePreviewUrl" class="w-32 h-32 object-cover mx-auto" />
+
           </div>
         </div>
-
-        <!-- input type file 숨기기 -->
+        <!-- 숨겨진 파일 input -->
         <input ref="fileInput" type="file" @change="onFileChange" style="display: none" />
       </div>
 
       <!-- 취소, 등록 버튼 -->
       <div class="flex justify-center space-x-4 pt-4 mt-5 mb-5">
         <button type="button" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-gray-300 hover:text-black hover:border-gray-300" @click="cancel">취소</button>
-        <button type="submit" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="save">등록</button>
+        <button type="submit" class="text-m text-gray-800 px-3 py-1 border border-gray-200 rounded-full hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">등록</button>
       </div>
     </div>
     <!--프로젝트 생성 선택 구간 끝-->
@@ -177,10 +197,11 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue';
 import { FontAwesomeIcon } from '@/assets/FontAwesome';
-import { getPositions, saveProject, getTechstacks, getLocation } from '@/api/projectApi';
-import { useRouter } from 'vue-router';
+import { getPositions, getTechstacks, getLocation, getProjectView, updateProject } from '@/api/projectApi';
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 const isDropdownOpen = ref(false); // 드롭다운 닫힌(false) 상태
 
 // 🌍지역 / 구분 선택 관련 scripts
@@ -306,25 +327,80 @@ const decreaseCount = (index) => {
 };
 
 // 게시글 원래 정보 가져오기
+const title = ref('');
+const content = ref('');
+const location = ref('');
+const project_period = ref('');
+const recruit_end_date = ref('');
+const recruitmentStatus = ref('');
 
-//파일 첨부 및 저장
-const file = ref(null); // 선택된 파일
-const fileList = ref([]); // 여러 파일을 담을 리스트
+//파일 첨부
+const file = ref(''); // 선택된 파일
 const selectedFile = ref(null); // 드롭드래그에서 선택된 파일
 const fileInput = ref(null); // 파일 입력을 위한 ref
 
-// 파일 미리보기
+const boardId = route.params.board_id;
+
+// 게시글 정보 가져오기
+const getProjectData = async () => {
+  try {
+    const res = await getProjectView(boardId); // 게시글 정보 API 가져오기
+    // console.log('원래 게시물 정보 가져오기', res.data.result);
+    // console.log('원래 게시물 정보 Json', JSON.stringify(res.data.result));
+    const project = res.data.result;
+
+    // 가져온 데이터로 초기화
+    title.value = project.title;
+    content.value = project.content;
+    location.value = project.location;
+    project_period.value = project.projectPeriod;
+    recruit_end_date.value = project.endDate;
+    recruitmentStatus.value = project.recruitmentStatus;
+
+    // 기술 스택 설정
+    selectedSkills.value = project.techStackDtoList.map((skill) => ({
+      techStackName: skill.techStackName,
+      imageUrl: skill.imageUrl
+    }));
+
+    // 모집 포지션 설정
+    positions.value = project.positionDtoList.map((positions) => ({
+      positionName: positions.positionName,
+      requiredCount: positions.requiredCount
+    }));
+
+    // 기존 첨부된 파일이 있다면 파일 설정
+    if (project.imageUrl) {
+      file.value = project.imageUrl; // 기존 이미지 URL을 file에 저장
+    } else {
+      file.value = null; // 파일이 없으면 null로 설정
+    }
+    console.log('기존 게시글 이미지 URL', file.value); // file.value가 제대로 할당되었는지 확인
+  } catch (error) {
+    console.error('게시글 정보 불러오기 실패:', error);
+  }
+};
+
+//이미지 미리보기
 const filePreviewUrl = computed(() => {
-  // file이 존재하고 이미지일 경우 미리보기 URL을 생성
-  return file.value ? URL.createObjectURL(file.value) : '';
+  // file이 File 객체인 경우: 파일로부터 미리보기 URL을 생성
+  if (file.value && file.value instanceof File) {
+    return URL.createObjectURL(file.value);
+  }
+  // file이 문자열인 경우 (기존에 서버에서 받아온 이미지 URL)
+  if (typeof file.value === 'string') {
+    return file.value;
+  }
+  // 그 외에는 빈 문자열 반환
+  return '';
 });
+
 
 // 파일 선택 후 처리
 const onFileChange = (event) => {
   const selected = event.target.files[0];
   if (selected) {
     file.value = selected;
-    fileList.value.push(selected); // 파일 리스트에 추가
     selectedFile.value = selected.name; // 드롭다운 기본값 설정
   }
 };
@@ -335,7 +411,6 @@ const dropFile = (event) => {
   const droppedFiles = event.dataTransfer.files;
   if (droppedFiles.length > 0) {
     file.value = droppedFiles[0]; // 첫 번째 파일을 선택
-    fileList.value.push(file.value); // 파일 리스트에 추가
     selectedFile.value = file.value.name; // 드롭다운 기본값 설정
   }
 };
@@ -345,37 +420,37 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-// 게시글 등록
-const title = ref('');
-const content = ref('');
-const location = ref('');
-const project_period = ref('');
-const recruit_end_date = ref('');
+// 파일 삭제
+const removeFile = () => {
+  file.value = null;
+};
 
-const save = async () => {
+// 수정 완료 함수
+const doUpdate = async () => {
   const data = {
     title: title.value,
     content: content.value,
     projectPeriod: project_period.value,
     location: location.value,
-    startDate: start_date.value,
     recruitEndDate: recruit_end_date.value,
     boardTechStackList: selectedSkills.value,
-    boardPositionList: positions.value
+    boardPositionList: positions.value,
+    recruitmentStatus: recruitmentStatus.value
   };
+  console.log(JSON.stringify(data));
 
   const formData = new FormData();
-  formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  formData.append('updateBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
   formData.append('boardImage', file.value);
-  // console.log('파일정보', file.value);
-  // const formData = new FormData();
-  // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
-  // console.log('저장내용', data);
-  const res = await saveProject(formData);
+  console.log('저장내용', data);
+  console.log('파일정보', file.value);
+
+  const res = await updateProject(boardId, formData);
+
   console.log(JSON.stringify(formData));
   if (res.status === 200) {
-    alert('글이 작성되었습니다.');
+    alert('글이 수정되었습니다.');
     router.push({ name: 'projectlist' });
     return;
   }
@@ -406,11 +481,11 @@ const minDate = computed(() => {
   return `${year}-${month}-${day}`; // 현재 날짜를 YYYY-MM-DD 형식으로 반환
 });
 
-// 이벤트 리스너
 watchEffect(() => {
   updateTechstacks(); // 기술, 언어 API 호출
   updatePositions(); // 포지션 API 호출
   updateLocations(); // 지역 API 호출
+  getProjectData();
   document.addEventListener('mousedown', handleClickOutside); // 바탕 클릭 시 드롭다운 닫기
 });
 </script>

@@ -3,13 +3,17 @@
     <div class="justify-center items-center">
       <div class="my-3">
         <div class="grid grid-cols-6">
-          <div></div>
+      
           <h2 class="text-2xl font-semibold ml-10 mb-5 text-center">내 정보 입력</h2>
         </div>
         <hr class="border-t-4 border-[#d10000]" />
 
         <form @submit.prevent="handleSubmit" class="grid gap-y-6 px-20 py-10">
           <!-- 프로필 사진 -->
+          <!-- 삭제 아이콘 -->
+          <!-- <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
+            <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
+          </button> -->
           <div class="grid grid-cols-5 items-center gap-x-4">
             <label for="profileImage" class="col-start-2 text-gray-700 text-lg font-semibold">프로필 사진</label>
             <div class="col-span-2 flex items-center">
@@ -27,8 +31,8 @@
           <div class="grid grid-cols-5 items-center gap-x-4">
             <label class="col-start-2 text-gray-700 text-lg font-semibold">닉네임 <span class="text-red-500">*</span></label>
             <div class="col-span-2 flex items-center">
-              <input type="text" v-model="nickname" placeholder="자모음 단일사용 불가" class="flex-1 border p-2 px-4 rounded-full" required />
-              <button type="button" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button>
+              <input type="text" v-model="nickname" class="flex-1 border p-2 px-4 rounded-full" required />
+              <!-- <button type="button" class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
               <!-- <button type="button" @click="checkNickname"
                 class="ml-2 border p-2 rounded-full text-gray-600">중복확인</button> -->
             </div>
@@ -121,7 +125,7 @@
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { useUserStore } from '@/store/userStore';
-import { loginUsers, uploadprofile, checkNickname, deleteUser } from '@/api/loginApi'; // registerUser 추가
+import { loginUsers, uploadprofile, deleteUser } from '@/api/loginApi'; // registerUser 추가
 import { useRouter } from 'vue-router';
 import { getPositions, getTechstacks, getLocation } from '@/api/projectApi';
 
@@ -135,7 +139,6 @@ const isDropdownOpen = ref(false); // 드롭다운 닫힌(false) 상태
 const nickname = ref('');
 const groupName = ref('');
 const location = ref('');
-const techStackList = ref([]);
 const profileImage = ref(null); // 프로필 이미지 미리보기용
 const selectedFile = ref(null); // 실제 파일 객체 (FormData에 첨부할 용도)
 const isSubmitted = ref(false); // 완료 버튼 클릭 여부를 추적
@@ -230,12 +233,12 @@ const toggleDropdown = () => {
 const selectSkill = (tech) => {
   if (!selectedSkills.value.includes(tech) && selectedSkills.value.length < 10) {
     if (!selectedSkills.value.includes(tech)) {
-    selectedSkills.value.push(tech);
-    const indexToRemove = availableTechOptions.value.indexOf(tech); // "b"의 인덱스를 찾음
-    if (indexToRemove !== -1) {
-      availableTechOptions.value.splice(indexToRemove, 1); // 인덱스 위치에서 1개 요소 삭제
+      selectedSkills.value.push(tech);
+      const indexToRemove = availableTechOptions.value.indexOf(tech); // "b"의 인덱스를 찾음
+      if (indexToRemove !== -1) {
+        availableTechOptions.value.splice(indexToRemove, 1); // 인덱스 위치에서 1개 요소 삭제
+      }
     }
-  }
   }
   if (availableTechOptions.value.length === 0) {
     isDropdownOpen.value = false;
@@ -282,6 +285,11 @@ const onFileChange = (event) => {
     selectedFile.value = file; // 파일을 저장 (FormData에 첨부할 파일)
     profileImage.value = URL.createObjectURL(file); // 이미지 미리보기 URL을 설정
   }
+};
+
+// 파일 삭제
+const removeFile = () => {
+  profileImage.value = null;
 };
 
 // 파일 인풋을 열기 위한 메서드
