@@ -53,13 +53,14 @@
               <template v-if="userProfile">
                 <div v-for="positionName in roleOptions" :key="positionName" class="flex wrap gap-2">
                   <input
-                    :checked="userProfile.positions.some((pos) => pos.positionName === positionName.positionName)"
-                    type="checkbox"
-                    :value="positionName.positionName"
-                    :id="positionName.positionName"
-                    @change="positionList.push(positionName.positionName)"
-                    class="cursor-pointer form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500"
-                  />
+  :checked="userProfile.positions.some((pos) => pos.positionName === positionName.positionName)"
+  type="checkbox"
+  :value="positionName.positionName"
+  :id="positionName.positionName"
+  @change="handlePositionChange(positionName.positionName)"
+  class="cursor-pointer form-checkbox h-5 w-5 text-blue-600 rounded-md border-gray-300 focus:ring-blue-500"
+/>
+
                   <label class="cursor-pointer" :for="positionName.positionName">{{ positionName.positionName }}</label>
                 </div>
               </template>
@@ -141,7 +142,7 @@ const loadUserProfile = async () => {
   try {
     const profile = await loginUsers(); // API로부터 사용자 프로필 정보 가져오기
     userProfile.value = profile.result; // API에서 받은 데이터를 userProfile에 저장
-    // console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
+    console.log('통신하고 나서 출력' + JSON.stringify(userProfile.value));
 
     // 원래 있는 기술 넣기
     const updatedTechStacks = userProfile.value.techStacks.map(({ techStackName, techStackImageUrl }) => ({
@@ -232,13 +233,11 @@ const handleSubmit = async () => {
 
   formData.append('userProfile', new Blob([JSON.stringify(userProfile)], { type: 'application/json; charset=UTF-8' }));
   console.log('폼데이터최종', JSON.stringify(userProfile));
-
+ console.log('던져라', positionList.value)
   try {
     await uploadprofile(formData); // formData 대신 userProfile 객체를 전달
     const data = await loginUsers();
     await useStore.profile(data.result); // 사용자 정보를 Pinia 스토어에 저장
-
-    console.log(JSON.stringify(userProfile.value));
 
     alert('수정 되었습니다.');
     router.push('/'); // 성공 시 프로필 페이지로 이동
@@ -310,13 +309,22 @@ const removeSkill = (index) => {
   }
 };
 
-const addPosition = () => {
-  positions.value.push({ role: '', count: 1 });
+const handlePositionChange = (positionName) => {
+  // 체크된 경우
+  if (positionList.value.includes(positionName)) {
+    // 체크 해제된 경우, positionList에서 해당 포지션을 제거
+    positionList.value = positionList.value.filter(pos => pos !== positionName);
+  } else {
+    // 체크된 경우, positionList에 해당 포지션을 추가
+    positionList.value.push(positionName);
+  }
+
+  // 배열의 중복을 방지하기 위해 Set을 사용하여 중복된 항목을 제거
+  positionList.value = Array.from(new Set(positionList.value));
 };
 
-const removePosition = (index) => {
-  positions.value.splice(index, 1);
-};
+
+
 
 // 포지션 서버 연결
 const updatePositions = async () => {
