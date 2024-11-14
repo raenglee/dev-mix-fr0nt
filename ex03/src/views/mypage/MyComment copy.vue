@@ -85,7 +85,7 @@ const commentDelete = async (id) => {
       const res = await deleteComments(boardId, id);
       if (res.status === 200) {
         alert('댓글이 정상적으로 삭제되었습니다.');
-        const updatedComments = await usercomments(useStore.userId);
+        const updatedComments = await getCommentsView(boardId);
         if (updatedComments.status === 200) {
           commentsarr.value = updatedComments.data.result; // 댓글 목록 갱신
         }

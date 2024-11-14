@@ -21,8 +21,10 @@
                       <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
                       <div class="flex items-center">
                         <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
-                        <RouterLink to="/projectview/:board_id" class="flex gap-2">
-                          <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">{{ board.title }}</p>
+                        <RouterLink :to="`/projectview/${board.boardId}`" class="flex gap-2">
+                          <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
+                            {{ board.title }}
+                          </p>
                           <p class="text-[#d10000]">[{{ board.commentCount }}]</p>
                         </RouterLink>
                       </div>
@@ -86,7 +88,6 @@
 <script setup>
 import { deleteProject, getPositions, getTechstacks } from '@/api/projectApi';
 import { userboards } from '@/api/userApi';
-import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import { ref, watchEffect } from 'vue';
 
@@ -131,7 +132,7 @@ const boardsarr = ref([]);
 
 // user_id 가져오기
 const useStore = useUserStore();
-console.log('user_id: ', useStore.userId);
+// console.log('user_id: ', useStore.userId);
 
 const myboards = async () => {
   try {
@@ -150,25 +151,24 @@ const myboards = async () => {
 };
 
 // 게시글 삭제
-// const doDelete = async () => {
-//   const isConfirmed = window.confirm('프로젝트를 삭제하시겠습니까?');
-//   if (isConfirmed) {
-//     try {
-//       const res = await deleteProject(route.params.board_id);
-//       if (res.status === 200) {
-//         alert('프로젝트 구인글이 삭제되었습니다.');
-//         router.push({ name: 'projectlist' });
-//       } else {
-//         alert('에러: ' + res.data);
-//       }
-//     } catch (error) {
-//       console.error('삭제 중 오류 발생:', error);
-//       alert('삭제 중 오류가 발생했습니다.');
-//     }
-//   } else {
-//     //아무것도 하지않으므로 빈 상태
-//   }
-// };
+const doDelete = async () => {
+  const isConfirmed = window.confirm('프로젝트를 삭제하시겠습니까?');
+  if (isConfirmed) {
+    try {
+      const res = await deleteProject(boardid);
+      if (res.status === 200) {
+        alert('프로젝트 구인글이 삭제되었습니다.');
+      } else {
+        alert('에러: ' + res.data);
+      }
+    } catch (error) {
+      console.error('삭제 중 오류 발생:', error);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  } else {
+    //아무것도 하지않으므로 빈 상태
+  }
+};
 
 watchEffect(() => {
   selectPositions();

@@ -309,7 +309,10 @@ const removePosition = (index) => {
 
 // 사람 수 증가
 const increaseCount = (index) => {
-  positions.value[index].requiredCount += 1;
+  // 최소값 1, 최대값 5 제한
+  if (positions.value[index].requiredCount < 5) {
+    positions.value[index].requiredCount += 1;
+  }
 };
 
 // 사람 수 감소

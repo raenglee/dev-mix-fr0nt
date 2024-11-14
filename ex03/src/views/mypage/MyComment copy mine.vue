@@ -5,11 +5,11 @@
         <!-- 전체 선택 버튼 -->
         <div class="flex justify-between">
           <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="toggleAllCheckboxes">전체</button>
-          <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="deleteSelectedComments">삭제</button>
+          <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="commentDelete">삭제</button>
         </div>
 
         <!-- 내가 작성한 댓글 내용 반복 -->
-        <div v-for="(comment, index) in commentsarr" :key="comment.id" class="flex flex-col space-y-1">
+        <div v-for="(comment, index) in commentsarr" :key="index" class="flex flex-col space-y-1">
           <div class="flex items-center justify-between w-full">
             <div class="flex gap-2 items-center w-full">
               <!-- 각 체크박스의 상태를 v-model로 바인딩 -->
@@ -28,14 +28,14 @@
             <div class="flex gap-3 text-center justify-end items-center text-sm">
               <div class="text-sm text-gray-500 flex-shrink-0">{{ comment.createdAt }}</div>
               <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">수정</p>
-              <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="commentDelete(comment.id)">삭제</p>
+              <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="deleteComments(comment.id)">삭제</p>
             </div>
           </div>
           <div class="mt-2">
             <hr class="border-t border-gray-300 mt-2 mb-2" />
           </div>
+          <!-- 내가 작성한 댓글 내용 반복 끝 -->
         </div>
-        <!-- 내가 작성한 댓글 내용 반복 끝 -->
       </div>
     </div>
   </div>
@@ -51,11 +51,12 @@ const commentsarr = ref([]);
 
 // user_id 가져오기
 const useStore = useUserStore();
+// console.log('user_id: ', useStore.userId);
 
 const mycomments = async () => {
   try {
     const res = await usercomments(useStore.userId);
-    console.log('mycomments response: ', res);
+    console.log('내 댓글 목록: ', res);
 
     // 데이터 구조 확인 후, commentsarr에 할당
     if (Array.isArray(res.result)) {
@@ -68,36 +69,36 @@ const mycomments = async () => {
   }
 };
 
-// 댓글 삭제 (개별)
-const commentDelete = async (id) => {
-  const comment = commentsarr.value.find((comment) => comment.id === id);
+// 댓글 삭제
+// const commentDelete = async (id) => {
 
-  if (!comment) {
-    console.error('댓글을 찾을 수 없습니다.');
-    return;
-  }
+//   const boardId = comment.boardId; // 댓글이 속한 boardId
+//   const commentId = comment.id;    // 삭제할 댓글의 id
+  
+//   console.log('댓글 id:', commentId);  // 삭제할 댓글의 id 확인
 
-  const boardId = comment.boardId;
-  const isConfirmed = window.confirm('댓글을 삭제 하시겠습니까?');
+//   const isConfirmed = window.confirm('댓글을 삭제 하시겠습니까?');
 
-  if (isConfirmed) {
-    try {
-      const res = await deleteComments(boardId, id);
-      if (res.status === 200) {
-        alert('댓글이 정상적으로 삭제되었습니다.');
-        const updatedComments = await usercomments(useStore.userId);
-        if (updatedComments.status === 200) {
-          commentsarr.value = updatedComments.data.result; // 댓글 목록 갱신
-        }
-      } else {
-        alert('에러: ' + res.data);
-      }
-    } catch (error) {
-      console.error('삭제 중 오류 발생:', error);
-      alert('삭제 중 오류가 발생했습니다.');
-    }
-  }
-};
+//   if (isConfirmed) {
+//     try {
+//       const res = await deleteComments(boardId, commentId);
+//       if (res.status === 200) {
+//         alert('댓글이 정상적으로 삭제되었습니다.');
+//         const updatedComments = await usercomments(useStore.userId);
+//         if (updatedComments.status === 200) {
+//           commentsarr.value = updatedComments.data.result; // 댓글 목록 갱신
+//         }
+//       } else {
+//         alert('에러: ' + res.data);
+//       }
+//     } catch (error) {
+//       console.error('삭제 중 오류 발생:', error);
+//       alert('삭제 중 오류가 발생했습니다.');
+//     }
+//   } else {
+//     //아무것도 하지않으므로 빈 상태
+//   }
+// };
 
 // 체크박스 상태를 관리하는 배열 (댓글 수만큼 체크박스)
 const checkboxes = ref([]);
@@ -106,39 +107,6 @@ const checkboxes = ref([]);
 const toggleAllCheckboxes = () => {
   const allChecked = checkboxes.value.every((checkbox) => checkbox); // 모든 체크박스가 선택된 상태인지 확인
   checkboxes.value = checkboxes.value.map(() => !allChecked); // 모든 체크박스를 반전시킴
-};
-
-// 선택된 댓글 삭제
-const deleteSelectedComments = async () => {
-  const selectedComments = commentsarr.value.filter((_, index) => checkboxes.value[index]); // 체크된 댓글만 필터링
-  if (selectedComments.length === 0) {
-    alert('삭제할 댓글을 선택해주세요.');
-    return;
-  }
-
-  const isConfirmed = window.confirm(`선택한 ${selectedComments.length}개의 댓글을 삭제하시겠습니까?`);
-  if (isConfirmed) {
-    try {
-      for (const comment of selectedComments) {
-        const res = await deleteComments(comment.boardId, comment.id);
-        if (res.status === 200) {
-          alert('댓글이 정상적으로 삭제되었습니다.');
-        } else {
-          alert('에러: ' + res.data);
-        }
-      }
-
-      // 삭제 후 댓글 목록 갱신
-      const updatedComments = await getCommentsView(selectedComments[0].boardId);
-      if (updatedComments.status === 200) {
-        commentsarr.value = updatedComments.data.result; // 댓글 목록 갱신
-        checkboxes.value = new Array(commentsarr.value.length).fill(false); // 체크박스 초기화
-      }
-    } catch (error) {
-      console.error('삭제 중 오류 발생:', error);
-      alert('삭제 중 오류가 발생했습니다.');
-    }
-  }
 };
 
 // commentsarr 변경 시 checkboxes 배열 동기화

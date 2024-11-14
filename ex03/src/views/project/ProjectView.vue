@@ -27,15 +27,6 @@
               <p class="font-bold pr-2 text-lg">진행 기간</p>
               <p class="py-2 pl-2">{{ projectPeriod }}</p>
             </div>
-            <!-- <div class="items-center">
-              <p class="font-bold pr-2 text-lg">기술 / 언어</p>
-              <div class="flex items-center">
-                <div class="py-2 space-x-3" v-for="tech in techStacks" :key="tech">
-                  <img :src="tech.imageUrl" class="w-10 h-10" />
-                  <span class="text-sm py-4">{{ tech.techStackName }}</span>
-                </div>
-              </div>
-            </div> -->
           </div>
           <div class="col-span-2 pl-0">
             <p class="font-bold text-lg pr-2">모집 마감일</p>
@@ -69,23 +60,14 @@
 
           <div class="flex flex-col col-span-3 items-center pt-5">
             <p class="font-bold text-lg w-full">기술 / 언어</p>
-            <div class="flex items-center w-full">
-              <div class="py-2 space-x-5" v-for="tech in techStacks" :key="tech">
-                <img :src="tech.imageUrl" class="w-10 h-10" />
-                <span class="text-sm">{{ tech.techStackName }}</span>
+            <div class="flex items-center w-full justify-start space-x-4">
+              <div class="flex flex-col items-center space-y-2 py-2" v-for="tech in techStacks" :key="tech.techStackName">
+                <!-- 이미지의 크기 맞추기 -->
+                <div class="w-10 h-10 overflow-hidden">
+                  <img :src="tech.imageUrl" class="w-full h-full object-cover" />
+                </div>
+                <span class="text-sm text-center">{{ tech.techStackName }}</span>
               </div>
-              <!--말줄임-->
-              <!-- <div class="py-2 space-x-5 flex items-center">
-                <div v-for="tech in techStacks.slice(0, 4)" :key="tech.id" class="inline-flex flex-col items-center space-x-2">
-                  <img :src="tech.imageUrl" class="w-10 h-10" />
-                  <span class="text-sm">{{ tech.techStackName }}</span>
-                </div>
-
-                <div v-if="techStacks.length > 4" class="inline-flex items-center space-x-2">
-                  <span class="text-sm text-gray-400">...</span>
-                </div>
-              </div> -->
-              <!--ㅎㅎ-->
             </div>
           </div>
         </div>
@@ -107,9 +89,12 @@
         <div class="flex justify-between mb-3 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
-            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">수정</button>
-            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">삭제</button>
-         
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
+              수정
+            </button>
+            <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doDelete">
+              삭제
+            </button>
           </div>
         </div>
         <!-- 댓글 작성 -->
@@ -121,8 +106,7 @@
           <!--댓글 입력창-->
           <div class="flex items-center w-full">
             <div class="my-6 mx-7 justify-center" style="width: 90%">
-              <textarea v-model="commentContent" class="w-full p-3 h-20 border border-gray-200 rounded-md focus:outline-none ring-gray-200 resize-none bg-gray-100"></textarea>
-              <p>250자 제한</p>
+              <textarea v-model="commentContent" class="w-full p-3 h-20 border border-gray-200 rounded-md focus:outline-none ring-gray-200 resize-none bg-gray-100" placeholder="250자 제한"></textarea>
             </div>
             <div>
               <button class="border border-gray-200 rounded-md h-20 w-20 px-2 text-base hover:bg-gray-100" @click="commentsave">등록</button>
@@ -364,7 +348,7 @@ const confirmSubmit = async () => {
     position: positionName.value,
     note: note.value
   };
-console.log(data);
+  console.log(data);
   try {
     const res = await applyProject(route.params.board_id, data.value);
     if (res.status === 200) {

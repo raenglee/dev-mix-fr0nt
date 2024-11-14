@@ -5,7 +5,6 @@ import ProjectUpdate from '@/views/project/ProjectUpdate.vue';
 import ProjectView from '@/views/project/ProjectView.vue';
 
 import Profile from '@/views/auth/Profile.vue';
-import UserProfile from '@/views/project/userprofile.vue';
 import MyPage from '@/views/mypage/MyPage.vue';
 import MyProfileEdit from '@/views/mypage/MyProfileEdit.vue';
 import MyComment from '@/views/mypage/MyComment.vue';
@@ -85,11 +84,6 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: Profile
-    },
-    {
-      path: '/userprofile',
-      name: 'userprofile',
-      component: UserProfile
     }
   ],
   scrollBehavior(to, from, savedPosition) {
