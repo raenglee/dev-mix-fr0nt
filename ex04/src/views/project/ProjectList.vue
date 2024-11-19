@@ -142,7 +142,7 @@
               <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">{{ item.location }}</div>
               <font-awesome-icon
                 :icon="item.isBookmarked ? ['fas', 'bookmark'] : ['far', 'bookmark']"
-                :class="[item.isBookmarked ? 'text-[#7371fc]' : 'text-gray-400', 'cursor-pointer']"
+                :class="[item.isBookmarked ? 'text-[#7371fc]' : 'text-gray-400', 'cursor-pointer', 'hover:scale-125']"
                 style="font-size: 22px"
                 @click.stop="toggleBookmark(item)"
               />
