@@ -151,24 +151,24 @@ const myboards = async () => {
 };
 
 // 게시글 삭제
-const doDelete = async () => {
-  const isConfirmed = window.confirm('프로젝트를 삭제하시겠습니까?');
-  if (isConfirmed) {
-    try {
-      const res = await deleteProject(boardid);
-      if (res.status === 200) {
-        alert('프로젝트 구인글이 삭제되었습니다.');
-      } else {
-        alert('에러: ' + res.data);
-      }
-    } catch (error) {
-      console.error('삭제 중 오류 발생:', error);
-      alert('삭제 중 오류가 발생했습니다.');
-    }
-  } else {
-    //아무것도 하지않으므로 빈 상태
-  }
-};
+// const doDelete = async () => {
+//   const isConfirmed = window.confirm('프로젝트를 삭제하시겠습니까?');
+//   if (isConfirmed) {
+//     try {
+//       const res = await deleteProject(boardid);
+//       if (res.status === 200) {
+//         alert('프로젝트 구인글이 삭제되었습니다.');
+//       } else {
+//         alert('에러: ' + res.data);
+//       }
+//     } catch (error) {
+//       console.error('삭제 중 오류 발생:', error);
+//       alert('삭제 중 오류가 발생했습니다.');
+//     }
+//   } else {
+//     //아무것도 하지않으므로 빈 상태
+//   }
+// };
 
 watchEffect(() => {
   selectPositions();
