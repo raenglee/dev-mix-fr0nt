@@ -357,9 +357,10 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-// 파일 삭제
 const removeFile = () => {
   file.value = null;
+  // 파일 입력 필드 초기화
+  fileInput.value.value = null;  // 입력 필드의 값도 초기화
 };
 
 // 게시글 등록

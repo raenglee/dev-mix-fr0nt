@@ -169,7 +169,7 @@
             <!-- 텍스트와 아이콘을 중앙 정렬하고 옆에 아이콘을 배치 -->
             <div class="flex items-center justify-center space-x-1 mb-2">
               <!-- file.name을 중앙 정렬하고, 아이콘은 그 옆에 붙여 배치 -->
-              <p class="text-center text-gray-500 cursor-pointer flex-shrink-0">{{ file.name }}</p>
+              <p class="text-center text-gray-500 cursor-pointer flex-shrink-0">{{ fileName }}</p>
               <!-- 삭제 아이콘 -->
               <button @click.stop="removeFile" class="text-gray-500 text-lg hover:text-[#d10000]">
                 <FontAwesomeIcon icon="fa-solid fa-trash" size="sm" />
@@ -399,6 +399,15 @@ const filePreviewUrl = computed(() => {
   return '';
 });
 
+// 이미지 이름을 제대로 출력하려면
+const fileName = computed(() => {
+  if (file.value && file.value instanceof File) {
+    return file.value.name;
+  }
+  // 기존 이미지 URL이 있을 경우 파일 이름을 추출하거나 기본 텍스트로 대체
+  return typeof file.value === 'string' ? file.value.split('/').pop() : '';
+});
+
 
 // 파일 선택 후 처리
 const onFileChange = (event) => {
@@ -427,6 +436,8 @@ const triggerFileInput = () => {
 // 파일 삭제
 const removeFile = () => {
   file.value = null;
+  // 파일 입력 필드 초기화
+  fileInput.value.value = null;  // 입력 필드의 값도 초기화
 };
 
 // 수정 완료 함수
@@ -455,7 +466,7 @@ const doUpdate = async () => {
   console.log(JSON.stringify(formData));
   if (res.status === 200) {
     alert('글이 수정되었습니다.');
-    router.push({ name: 'projectlist' });
+    router.push({ name: 'projectview', params: { board_id: boardId } });
     return;
   }
   alert('빈 항목이 없어야 합니다');
@@ -466,7 +477,7 @@ const cancel = () => {
   const isConfirmed = window.confirm('현재 작성 중인 내용은 저장되지 않습니다. 작성을 취소하시겠습니까?');
   if (isConfirmed) {
     // console.log('게시글 작성 취소버튼 눌리는지 확인');
-    router.push({ name: 'projectlist' });
+    router.push({ name: 'projectview', params: { board_id: boardId } });
   } else {
     // 취소한 경우 아무런 동작도 하지 않으므로 아무것도 적지 않기
     // console.log('게시글 작성 취소를 취소');
