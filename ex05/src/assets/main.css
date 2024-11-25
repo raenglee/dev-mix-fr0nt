@@ -1,0 +1,29 @@
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: 'wdth' 100;
+}
+
+
+/*프로젝트 카드 눌리는 효과*/
+.project-card {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px); /* 살짝 위로 튕겨 나가는 효과 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+/*마이페이지 탭 호버 애니메이션*/
+.mypage-tab {
+  @apply transition-transform duration-300 transform hover:translate-y-[-5px] hover:bg-[#d1000020] hover:border-b-2 hover:border-[#d10000];
+}

@@ -63,29 +63,69 @@
       </div>
     </div> -->
 
-    <div class="flex items-center justify-between w-full mb-2">
-      <div class="top-4 flex items-center justify-between">
+    <div class="flex flex-col w-full mb-4">
+      <!-- 정렬 필터 -->
+      <div class="flex text-sm text-gray-700 gap-6 mb-4 justify-end">
+        <p class="cursor-pointer hover:text-gray-500 transition-colors">신청 순</p>
+        <p class="cursor-pointer hover:text-gray-500 transition-colors">닉네임 순</p>
+        <p class="cursor-pointer hover:text-gray-500 transition-colors">프로젝트 순</p>
+      </div>
+
+      <!-- 테이블 -->
+      <table class="min-w-full border-separate border-spacing-0 border border-gray-100 rounded-lg overflow-hidden">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="border-b text-center p-3 text-gray-800 rounded-tl-lg">신청자</th>
+            <th class="border-b text-center p-3 text-gray-800">프로젝트명</th>
+            <th class="border-b text-center p-3 text-gray-800">포지션</th>
+            <th class="border-b text-center p-3 text-gray-800">내용</th>
+            <th class="border-b text-center p-3 text-gray-800">신청날짜</th>
+            <th class="border-b text-center p-3 text-gray-800 rounded-tr-lg">승인 여부</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">닉</td>
+            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
+            <td class="py-3 px-4 border-b">백엔드</td>
+            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">신청합니다</td>
+            <td class="py-3 px-4 border-b">2024.11.28</td>
+            <td class="py-3 px-4 border-b text-[#7371fc]">승인</td>
+          </tr>
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">고양이</td>
+            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
+            <td class="py-3 px-4 border-b">디자이너</td>
+            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">신청합니다2</td>
+            <td class="py-3 px-4 border-b">2024.11.26</td>
+            <td class="py-3 px-4 border-b text-[#d10000]">거절</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- <div class="top-4 flex items-center justify-between">
         <img v-if="profileImage" :src="profileImage" class="h-8 w-8 rounded-full" />
         <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
         <div class="text-gray-800 min-w-20 text-center mr-6">닉네임</div>
       </div>
       <div class="flex gap-2 items-center w-full">
-        <!-- 댓글내용 텍스트, 말줄임표 적용 -->
-        <div class="flex flex-col w-full">
+        댓글내용 텍스트, 말줄임표 적용
+        <div class="flex w-full">
+          <p class="text-gray-700 cursor-pointer text-center px-2">글 제목</p>
+          <p class="text-gray-700 min-w-20">[신청 온 포지션]</p>
+          <p class="cursor-pointer text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">신청 온 내용</p>
           
-          <p class="cursor-pointer text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden"><span class="font-bold text-gray-700">[신청 온 포지션]</span> 신청 온 내용</p>
-          <p class="text-sm text-gray-500 cursor-pointer">신청된 글 제목</p>
         </div>
       </div>
-      <!-- 오른쪽 끝에 위치 -->
       <div class="flex gap-3 text-center justify-end items-center text-sm">
         <p class="text-sm text-gray-600">2024.11.26</p>
-        <!-- <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">신청 취소</p> -->
+         <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">신청 취소</p>
       </div>
     </div>
     <div>
       <hr class="border-t border-gray-200" />
-    </div>
+    </div> -->
 
     <!-- <div v-if="boardsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 100px;">참여중인 프로젝트가 없습니다.</div> -->
     <p class="my-4 text-lg font-bold mt-10">참여 중인 프로젝트</p>
