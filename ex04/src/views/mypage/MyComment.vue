@@ -8,6 +8,9 @@
           <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="deleteSelectedComments">삭제</button>
         </div>
 
+        <!-- 댓글이 없을 경우 -->
+        <div v-if="commentsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 500px;">작성한 댓글이 없습니다.</div>
+
         <!-- 내가 작성한 댓글 내용 반복 -->
         <div v-for="(comment, index) in commentsarr" :key="comment.id" class="flex flex-col space-y-1">
           <div class="flex items-center justify-between w-full">
@@ -155,6 +158,4 @@ watchEffect(() => {
 });
 </script>
 
-<style scoped>
-/* 스타일을 필요에 맞게 추가할 수 있습니다. */
-</style>
+<style scoped></style>

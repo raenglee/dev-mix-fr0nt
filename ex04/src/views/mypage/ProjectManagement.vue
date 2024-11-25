@@ -8,6 +8,9 @@
           <button type="button" class="border border-gray-400 w-12 rounded-full text-sm" @click="toggleAllCheckboxes">전체</button>
           <button type="button" class="border border-gray-400 w-12 rounded-full text-sm">삭제</button>
         </div> -->
+
+        <div v-if="boardsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 100px">작성한 글이 없습니다.</div>
+
         <div class="p-1">
           <!-- 내가 작성한 프로젝트 배열 -->
           <div v-for="(board, index) in boardsarr" :key="index">
@@ -47,7 +50,44 @@
       </div>
     </div>
 
-    <p class="my-4 text-lg font-bold">내가 참여 중인 프로젝트</p>
+    <p class="text-lg font-bold mb-4">받은 신청</p>
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+      <div class="cursor-pointer border rounded-2xl p-4 relative project-card">
+        <div class="top-4 flex items-center justify-between">
+          <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
+        </div>
+        <div class="text-sm mb-2 text-gray-800">모집 마감일 | 0000.00.00</div>
+        <div class="text-xl font-bold mb-2 text-gray-800">작성한 글 제목</div>
+        <hr class="border-t border-gray-300 mb-2" />
+        <div class="text-xl cursor-pointer text-gray-800 text-center font-bold">지원자 <span class="text-[#d10000]">N</span></div>
+      </div>
+    </div> -->
+
+    <div class="flex items-center justify-between w-full mb-2">
+      <div class="top-4 flex items-center justify-between">
+        <img v-if="profileImage" :src="profileImage" class="h-8 w-8 rounded-full" />
+        <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
+        <div class="text-gray-800 min-w-20 text-center mr-1">닉네임</div>
+      </div>
+      <div class="flex gap-2 items-center w-full">
+        <!-- 댓글내용 텍스트, 말줄임표 적용 -->
+        <div class="flex flex-col w-full">
+          <p class="text-sm text-gray-600">지원날짜 2024.11.26</p>
+          <p class="cursor-pointer text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden"><span class="font-bold text-gray-700">[신청 온 포지션]</span> 신청 온 내용</p>
+          <p class="text-sm text-gray-500 cursor-pointer">신청된 글 제목</p>
+        </div>
+      </div>
+      <!-- 오른쪽 끝에 위치 -->
+      <div class="flex gap-3 text-center justify-end items-center text-sm">
+        <!-- <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">신청 취소</p> -->
+      </div>
+    </div>
+    <div>
+      <hr class="border-t border-gray-200" />
+    </div>
+
+    <!-- <div v-if="boardsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 100px;">참여중인 프로젝트가 없습니다.</div> -->
+    <p class="my-4 text-lg font-bold mt-10">내가 참여 중인 프로젝트</p>
     <!--내가 참여중인 프로젝트 카드 시작-->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-10">
       <div class="cursor-pointer border rounded-2xl p-4 relative project-card">

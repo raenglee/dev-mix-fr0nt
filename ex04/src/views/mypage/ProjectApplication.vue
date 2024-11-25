@@ -1,86 +1,32 @@
 <template>
   <div class="m-auto w-full">
-    <p class="text-lg font-bold mb-4">받은 신청</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-10">
-      <div class="cursor-pointer border rounded-2xl p-4 relative project-card">
-        <div class="top-4 flex items-center justify-between">
-          <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
-          <!-- <font-awesome-icon
-                  :icon="item.isBookmarked ? ['fas', 'bookmark'] : ['far', 'bookmark']"
-                  :class="[item.isBookmarked ? 'text-[#7371fc]' : 'text-gray-400', 'cursor-pointer']"
-                  style="font-size: 22px"
-                  @click.stop="toggleBookmark(item)"
-                /> -->
-        </div>
-        <div class="text-sm mb-2 text-gray-800">모집 마감일 |</div>
-        <div class="text-xl font-bold mb-2 text-gray-800">제목</div>
-        <!--기술 아이콘-->
-        <div class="flex pt-2 gap-3 mb-1">
-          <div>
-            <!-- <img class="w-10 h-10" :src="tech.techStackImageUrl" /> -->
-          </div>
-        </div>
-        <div class="flex flex-col">
-          <p class="flex-grow text-right text-sm py-2 text-gray-800">작성자</p>
-          <!-- <p class="flex-grow text-right text-sm py-2" v-else>&nbsp;</p> -->
+   
 
-          <div class="flex justify-between items-center mt-3">
-            <!-- 인원 정보 (0 / 총 인원) -->
-            <div class="relative group">
-              <!-- 인원 0 / 총 인원 표시 -->
-              <div class="text-sm cursor-pointer text-gray-800">인원 남은 / 총인원</div>
-              <!-- 개별 인원 수 출력, 마우스를 올리면 나타나도록 -->
-              <div
-                class="absolute z-10 bg-white left-14 bottom-2 p-2 shadow-lg rounded-xl mt-2 w-auto whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-300"
-              >
-                <div class="text-sm my-1 m-auto"><span class="font-bold rounded-md px-1 text-gray-800"> 포지션명 -</span>요구인원수명</div>
-              </div>
-            </div>
-          </div>
+    <!--보낸 신청-->
+    <p class="text-lg font-bold my-4 mt-10">보낸 신청</p>
+
+    <!-- <div v-if="boardsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 100px;">작성한 글이 없습니다.</div> -->
+
+    <div class="flex items-center justify-between w-full mb-2">
+      <div class="top-4 flex items-center justify-between">
+        <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800 min-w-20 text-center mr-2">읽음</div>
+      </div>
+      <div class="flex gap-2 items-center w-full">
+        <!-- 댓글내용 텍스트, 말줄임표 적용 -->
+        <div class="flex flex-col w-full">
+          <p class="text-sm text-gray-600">지원날짜 2024.11.26</p>
+          <p class="cursor-pointer text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden"><span class="font-bold text-gray-700">[신청한 포지션]</span> 신청한 내용</p>
+          <p class="text-sm text-gray-500 cursor-pointer">신청한 글 제목</p>
         </div>
+      </div>
+
+      <!-- 작성일, 수정, 삭제를 오른쪽 끝에 위치시키기 -->
+      <div class="flex gap-3 text-center justify-end items-center text-sm">
+        <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">신청 취소</p>
       </div>
     </div>
-
-    <!--2번째글-->
-    <p class="text-lg font-bold my-4">보낸 신청</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-10">
-      <div class="cursor-pointer border rounded-2xl p-4 relative project-card">
-        <div class="top-4 flex items-center justify-between">
-          <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
-          <!-- <font-awesome-icon
-                  :icon="item.isBookmarked ? ['fas', 'bookmark'] : ['far', 'bookmark']"
-                  :class="[item.isBookmarked ? 'text-[#7371fc]' : 'text-gray-400', 'cursor-pointer']"
-                  style="font-size: 22px"
-                  @click.stop="toggleBookmark(item)"
-                /> -->
-        </div>
-        <div class="text-sm mb-2 text-gray-800">모집 마감일 |</div>
-        <div class="text-xl font-bold mb-2 text-gray-800">제목</div>
-        <!--기술 아이콘-->
-        <div class="flex pt-2 gap-3 mb-1">
-          <div>
-            <!-- <img class="w-10 h-10" :src="tech.techStackImageUrl" /> -->
-          </div>
-        </div>
-        <div class="flex flex-col">
-          <p class="flex-grow text-right text-sm py-2 text-gray-800">작성자</p>
-          <!-- <p class="flex-grow text-right text-sm py-2" v-else>&nbsp;</p> -->
-
-          <div class="flex justify-between items-center mt-3">
-            <!-- 인원 정보 (0 / 총 인원) -->
-            <div class="relative group">
-              <!-- 인원 0 / 총 인원 표시 -->
-              <div class="text-sm cursor-pointer text-gray-800">인원 남은 / 총인원</div>
-              <!-- 개별 인원 수 출력, 마우스를 올리면 나타나도록 -->
-              <div
-                class="absolute z-10 bg-white left-14 bottom-2 p-2 shadow-lg rounded-xl mt-2 w-auto whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:block transition-opacity duration-300"
-              >
-                <div class="text-sm my-1 m-auto"><span class="font-bold rounded-md px-1 text-gray-800"> 포지션명 -</span>요구인원수명</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div>
+      <hr class="border-t border-gray-200" />
     </div>
   </div>
 </template>

@@ -1,14 +1,15 @@
 <template>
   <div class="w-4/6 mx-auto my-10">
     <section class="container mx-auto">
-      <form @submit.prevent="handleSubmit" class="grid gap-y-5 px-20 py-10">
-        <div class="justify-center items-center text-center space-y-3 pb-5">
+      <form @submit.prevent="handleSubmit" class="gap-y-5 px-20 py-10">
+        <div class="justify-center items-center text-center space-y-3 pb-8">
           <p class="border border-[#d10000] rounded-full px-4 text-center m-auto inline-block">
             {{ recruitmentStatus }}
           </p>
           <h1 class="text-center font-bold text-2xl">{{ title }}</h1>
           <div class="flex space-x-2 items-center justify-center">
-            <img :src="profileImage" class="w-8 h-8 rounded-full" />
+            <img v-if="profileImage" :src="profileImage" class="h-8 w-8 rounded-full" />
+            <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
             <p>{{ nickname }}</p>
           </div>
           <p class="text-gray-500 text-l text-right pr-10">조회수: {{ viewCount }}</p>
@@ -16,8 +17,8 @@
             <hr class="border-t-4 border-[#d10000]" />
           </div>
         </div>
-        <div class="justify-between grid grid-cols-9 gap-4 px-20">
-          <div class="flex flex-col space-y-10 col-span-3">
+        <div class="flex flex-wrap px-16">
+          <div class="flex-none flex-col space-y-10 min-w-[300px]">
             <div class="items-center">
               <p for="region" class="font-bold text-lg pr-2">지역 / 구분</p>
               <p class="py-2 pl-2">{{ location }}</p>
@@ -27,12 +28,26 @@
               <p class="font-bold pr-2 text-lg">진행 기간</p>
               <p class="py-2 pl-2">{{ projectPeriod }}</p>
             </div>
+
+            <div class="flex flex-col col-span-3 items-center">
+              <p class="font-bold text-lg w-full">기술 / 언어</p>
+              <div class="flex items-center w-full justify-start space-x-4">
+                <div class="flex flex-col items-center space-y-2 py-2" v-for="tech in techStacks" :key="tech.techStackName">
+                  <!-- 이미지의 크기 맞추기 -->
+                  <div class="w-10 h-10 overflow-hidden">
+                    <img :src="tech.imageUrl" class="w-full h-full object-cover" />
+                  </div>
+                  <span class="text-sm text-center">{{ tech.techStackName }}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-span-2 pl-0">
+
+          <div class="min-w-[270px]">
             <p class="font-bold text-lg pr-2">모집 마감일</p>
             <p class="py-2 pl-2">{{ endDate }}</p>
           </div>
-          <div class="space-y-4 col-span-4 pl-20 flex flex-col">
+          <div class="space-y-4 min-w-[410px] pl-15 flex flex-col">
             <p class="font-bold pr-2 text-lg">모집 현황</p>
             <!-- flex-col로 세로 방향으로 배치 -->
             <div class="flex flex-col w-full space-y-4">
@@ -47,36 +62,21 @@
                   지원
                 </button>
 
-                <button v-else-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 bg-gray-300 cursor-not-allowed">
+                <button v-else-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 py-1 bg-gray-300 cursor-not-allowed">
                   승인대기
                 </button>
 
-                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200">
+                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border text-sm flex-shrink-0 border-gray-200 rounded-full min-w-11 h-8 px-4 py-1 hover:bg-gray-200">
                   지원자 확인
                 </button>
               </div>
             </div>
           </div>
-
-          <div class="flex flex-col col-span-3 items-center pt-5">
-            <p class="font-bold text-lg w-full">기술 / 언어</p>
-            <div class="flex items-center w-full justify-start space-x-4">
-              <div class="flex flex-col items-center space-y-2 py-2" v-for="tech in techStacks" :key="tech.techStackName">
-                <!-- 이미지의 크기 맞추기 -->
-                <div class="w-10 h-10 overflow-hidden">
-                  <img :src="tech.imageUrl" class="w-full h-full object-cover" />
-                </div>
-                <span class="text-sm text-center">{{ tech.techStackName }}</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <h1 class="pt-8 pl-10 font-bold text-xl">프로젝트 소개</h1>
-        <div class="mb-5">
-          <hr class="border-t-2 border-gray-200 px-5" />
-        </div>
-        <p class="px-10 pb-6">{{ content }}</p>
+        <h1 class="py-8 pl-10 font-bold text-xl">프로젝트 소개</h1>
+        <hr class="border-t-2 border-gray-200 px-5" />
+        <p class="px-10 py-6">{{ content }}</p>
         <!--사진-->
         <div v-for="image in files" :key="image">
           <img :src="image.imageUrl" />
@@ -86,7 +86,7 @@
         <div>
           <hr class="border-t-4 border-[#d10000]" />
         </div>
-        <div class="flex justify-between mb-3 mx-7">
+        <div class="flex justify-between my-5 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
           <div class="space-x-3">
             <button v-if="nickname == loggedInUserNickname" class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]" @click="doUpdate">
@@ -99,8 +99,11 @@
         </div>
         <!-- 댓글 작성 -->
         <div class="ml-30 justify-center items-center w-full">
-          <div class="flex items-center">
-            <img :src="useStore.profileImage" class="w-8 h-8 rounded-full" />
+          <div class="flex items-center pt-3">
+            <div class="flex items-center w-8 h-8">
+               <img v-if="useStore.profileImage" :src="useStore.profileImage" class="h-8 w-8 rounded-full" />
+                <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
+            </div>
             <p class="ml-3">{{ useStore.nickname }}</p>
           </div>
           <!--댓글 입력창-->
@@ -117,7 +120,8 @@
             <div v-for="comment in comments" :key="comment.id">
               <!-- 댓글 방식 확인 {{ comment }} -->
               <div class="flex items-center mx-2">
-                <img :src="comment.profileImage" class="w-8 h-8 rounded-full" />
+                <img v-if="comment.profileImage" :src="comment.profileImage" class="h-8 w-8 rounded-full" />
+                <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
                 <p class="font-semibold ml-2 text-gray-800">{{ comment.nickname }}</p>
               </div>
               <div class="flex items-center justify-between mt-2 mx-2">
@@ -137,8 +141,8 @@
     </section>
   </div>
 
-  <!--지원모달-->
 
+  <!--지원모달-->
   <div v-if="showModal" class="modal-container" @click.self="closeModal">
     <div class="modal-content">
       <button class="close-button" @click="closeModal">x</button>
@@ -292,7 +296,7 @@ const commentsave = async () => {
   }
   alert('에러: ' + res.data);
 };
- console.log('useStore.nickname.value: ' +useStore.nickname);
+console.log('useStore.nickname.value: ' + useStore.nickname);
 // 댓글 삭제
 const commentDelete = async (id) => {
   console.log('댓글 id:', id);
@@ -344,15 +348,17 @@ const closeModal = () => {
 const isPending = ref(false); // 지원 상태 변수
 const note = ref('');
 
-// 지원 API를 호출하고 상태 변경
+// 지원 API 호출
 const confirmSubmit = async () => {
-  const data = {
-    position: positionName.value,
-    note: note.value
-  };
-  console.log(data);
   try {
-    const res = await applyProject(route.params.board_id, data.value);
+    const data = {
+      positionName: positionName.value,
+      note: note.value
+    };
+
+    const res = await applyProject(route.params.board_id, data);
+    console.log('보드아이디,내용', route.params.board_id, data);
+    console.log('지원하기 모달', res);
     if (res.status === 200) {
       isPending.value = true;
       closeModal(); // 기존 지원 모달 닫기

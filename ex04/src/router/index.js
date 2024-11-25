@@ -12,6 +12,7 @@ import MyLikePost from '@/views/mypage/MyLikePost.vue';
 import MyProfile from '@/views/mypage/MyProfile.vue';
 import ProjectManagement from '@/views/mypage/ProjectManagement.vue';
 import Projectapplication from '@/views/mypage/ProjectApplication.vue';
+import ProjectApplicant from '@/views/project/ProjectApplicant.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,7 +58,7 @@ const router = createRouter({
           name: 'projectmanagement',
           component: ProjectManagement
         },
-        
+
         {
           path: '', // 기본 경로: /mypage
           name: 'default', // 이름 추가
@@ -84,14 +85,19 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: Profile
+    },
+    {
+      path: '/projectapplicant',
+      name: 'projectapplicant',
+      component: ProjectApplicant
     }
   ],
   scrollBehavior(to, from, savedPosition) {
     // 페이지 이동 후 항상 페이지 맨 위로 스크롤 이동
     if (savedPosition) {
-      return savedPosition;  // 이전에 저장된 위치로 돌아가기
+      return savedPosition; // 이전에 저장된 위치로 돌아가기
     }
-    return { top: 0 };  // 페이지 맨 위로 스크롤
+    return { top: 0 }; // 페이지 맨 위로 스크롤
   }
 });
 

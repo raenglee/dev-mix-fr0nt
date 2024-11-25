@@ -10,6 +10,7 @@
         <!--🌐로그인 한 후 아이콘-->
         <template v-if="useStore.loginCheck">
           <div class="flex space-x-1">
+                    <RouterLink to="/projectapplicant" class="block px-4 py-2 text-white"> 지원자 테스트 페이지 </RouterLink>
             <font-awesome-icon icon="bell" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />
             <RouterLink to="/projectcreate">
               <font-awesome-icon icon="pen" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />
@@ -36,6 +37,8 @@
                   <li>
                     <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left">로그아웃</button>
                   </li>
+                  <!--테스트-->
+
                 </ul>
               </div>
             </div>
