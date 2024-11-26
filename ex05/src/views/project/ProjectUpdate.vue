@@ -451,7 +451,7 @@ const doUpdate = async () => {
     boardTechStackList: selectedSkills.value,
     boardPositionList: positions.value,
     recruitmentStatus: recruitmentStatus.value,
-    boardImage: file.value
+    imageUrl: file.value instanceof File ? '' : file.value
   };
   console.log(JSON.stringify(data));
 

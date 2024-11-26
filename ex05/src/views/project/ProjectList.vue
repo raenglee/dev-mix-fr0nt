@@ -133,6 +133,17 @@
       </div>
       <!--서치 박스 끝-->
 
+      <div class="flex mb-3 justify-end text-sm">
+        <button class="cursor-pointer hover:font-bold" 
+        @click="latestSort" :class="{ 'font-bold underline': activeButton === 'latest' }">최신순</button>
+        <i>ㆍ</i>
+        <button class="cursor-pointer hover:font-bold" 
+        @click="famousSort" :class="{ 'font-bold underline': activeButton === 'famous' }">인기순</button>
+        <i>ㆍ</i>
+        <button class="cursor-pointer hover:font-bold" 
+        @click="registerSort" :class="{ 'font-bold underline': activeButton === 'register' }">등록순</button>
+      </div>
+
       <!--📝프로젝트 글 박스-->
       <template v-if="arr && arr.length > 0">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-10">
@@ -275,6 +286,8 @@ const getProjects = async (num = 1) => {
         totalCurrentCount // 총 현재 인원 수
       };
     });
+
+    applySort();
     // console.log('프로젝트 내용: ', arr.value);
   } catch (error) {
     console.error('프로젝트 가져오기 오류:', error);
@@ -301,9 +314,10 @@ const clickneededonly = () => {
 const toggleBookmark = async (item) => {
   // item.isBookmarked = !item.isBookmarked; // 누른 게시물 북마크 상태 반전
 
-  if (!useStore.loginCheck) {  // 로그인하지 않은 경우
-    isModal.value = true;  // 모달 열기
-    return;  // 북마크 처리 함수 종료
+  if (!useStore.loginCheck) {
+    // 로그인하지 않은 경우
+    isModal.value = true; // 모달 열기
+    return; // 북마크 처리 함수 종료
   }
 
   const newBookmarkState = !item.isBookmarked;
@@ -321,6 +335,54 @@ const toggleBookmark = async (item) => {
     console.error('북마크 오류:', error);
   }
 };
+
+// 정렬
+const activeButton = ref('latest');
+
+// localStorage에서 상태읽기
+watchEffect(() => {
+  const savedButton = localStorage.getItem('activeButton');
+  if (savedButton) {
+    activeButton.value = savedButton;
+  }
+});
+
+// 클릭된 버튼을 localStorage에 저장
+const setActive = (button) => {
+  activeButton.value = button;
+  localStorage.setItem('activeButton', button); // localStorage에 버튼 상태 저장
+};
+
+const latestSort = () => {
+  // arr.value.sort((a, b) => b.boardId - a.boardId);
+  setActive('latest');
+};
+const famousSort = () => {
+  // arr.value.sort((a, b) => b.viewCount - a.viewCount);
+  setActive('famous');
+};
+const registerSort = () => {
+  // arr.value.sort((a, b) => a.boardId - b.boardId);
+  setActive('register');
+};
+
+// 선택된 정렬을 배열에 적용
+const applySort = () => {
+  if (activeButton.value === 'latest') {
+    arr.value.sort((a, b) => b.boardId - a.boardId);
+  } else if (activeButton.value === 'famous') {
+    arr.value.sort((a, b) => b.viewCount - a.viewCount);
+  } else if (activeButton.value === 'register') {
+    arr.value.sort((a, b) => a.boardId - b.boardId);
+  }
+};
+
+// 페이지 이동 시 적용될 정렬을 보장하는 watch
+watchEffect(() => {
+  if (arr.value.length > 0) {
+    applySort();
+  }
+});
 
 // 모달 닫기 (배경 클릭 시)
 const closeModal = () => {

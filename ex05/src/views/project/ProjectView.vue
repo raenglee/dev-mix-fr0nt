@@ -78,7 +78,7 @@
         <hr class="border-t-2 border-gray-200 px-5" />
         <p class="px-10 py-6">{{ content }}</p>
         <!--사진-->
-        <div v-for="image in files" :key="image">
+        <div v-for="image in files" :key="image" class="mb-10">
           <img :src="image.imageUrl" />
         </div>
 

@@ -3,6 +3,7 @@
     <p class="text-lg font-bold mb-4">작성한 프로젝트</p>
     <div class="mx-2">
       <div class="flex flex-col gap-4 mb-10 rounded-lg">
+        <RouterLink to="/projectcreate"><button class="border p-1 rounded-lg text-sm float-right hover:bg-gray-200">글 쓰기</button></RouterLink>
         <!-- 전체 선택 버튼 -->
         <!-- <div class="flex justify-between">
           <button type="button" class="border border-gray-400 w-12 rounded-full text-sm" @click="toggleAllCheckboxes">전체</button>
@@ -15,36 +16,37 @@
           <!-- 내가 작성한 프로젝트 배열 -->
           <div v-for="(board, index) in boardsarr" :key="index">
             <div class="board-item">
-              <div class="flex items-center justify-between w-full">
-                <div class="flex gap-3 items-center w-full">
-                  <!-- 내용 텍스트, 말줄임표 적용 -->
-                  <div class="flex flex-col w-full">
-                    <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
-                    <div class="flex justify-between items-center w-full">
-                      <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
-                      <div class="flex items-center">
-                        <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
-                        <RouterLink :to="`/projectview/${board.boardId}`" class="flex gap-2">
+              <RouterLink :to="`/projectview/${board.boardId}`" class="flex gap-2">
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex gap-3 items-center w-full">
+                    <!-- 내용 텍스트, 말줄임표 적용 -->
+                    <div class="flex flex-col w-full">
+                      <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
+                      <div class="flex justify-between items-center w-full">
+                        <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
+                        <div class="flex items-center">
+                          <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
                           <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
                             {{ board.title }}
                           </p>
-                          <p class="text-[#d10000]">[{{ board.commentCount }}]</p>
-                        </RouterLink>
-                      </div>
-                      <!-- 수정 삭제를 제목과 댓글 수 오른쪽 끝에 위치시키기 -->
-                      <div class="flex gap-3 text-center justify-center items-center text-sm">
-                        <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">수정</p>
-                        <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="doDelete">삭제</p>
+                          <p class="text-[#d10000] ml-2">[{{ board.commentCount }}]</p>
+                        </div>
+                        <!-- 수정 삭제를 제목과 댓글 수 오른쪽 끝에 위치시키기 -->
+                        <div class="flex gap-3 text-center justify-center items-center text-sm z-20">
+                          <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">수정</p>
+                          <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="doDelete">삭제</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </RouterLink>
               <div class="my-4">
                 <hr class="border-t-1 border-gray-300" />
               </div>
             </div>
           </div>
+
           <!-- 내가 작성한 프로젝트 끝 -->
         </div>
       </div>
@@ -65,14 +67,16 @@
 
     <div class="flex flex-col w-full mb-4">
       <!-- 정렬 필터 -->
-      <div class="flex text-sm text-gray-700 gap-6 mb-4 justify-end">
+      <div class="flex text-sm text-gray-700 gap-2 mb-4 justify-end">
         <p class="cursor-pointer hover:text-gray-500 transition-colors">신청 순</p>
+        <i>|</i>
         <p class="cursor-pointer hover:text-gray-500 transition-colors">닉네임 순</p>
+        <i>|</i>
         <p class="cursor-pointer hover:text-gray-500 transition-colors">프로젝트 순</p>
       </div>
 
       <!-- 테이블 -->
-      <table class="min-w-full border-separate border-spacing-0 border border-gray-100 rounded-lg overflow-hidden">
+      <table class="min-w-full border-separate border-spacing-0 rounded-lg overflow-hidden">
         <thead class="bg-gray-50">
           <tr>
             <th class="border-b text-center p-3 text-gray-800 rounded-tl-lg">신청자</th>
@@ -84,7 +88,7 @@
           </tr>
         </thead>
         <tbody class="text-center">
-          <tr class="hover:bg-gray-50 transition-colors">
+          <tr class="">
             <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">닉</td>
             <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
             <td class="py-3 px-4 border-b">백엔드</td>
@@ -92,7 +96,7 @@
             <td class="py-3 px-4 border-b">2024.11.28</td>
             <td class="py-3 px-4 border-b text-[#7371fc]">승인</td>
           </tr>
-          <tr class="hover:bg-gray-50 transition-colors">
+          <tr class="">
             <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">고양이</td>
             <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
             <td class="py-3 px-4 border-b">디자이너</td>
