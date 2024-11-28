@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // const url = 'http://192.168.0.61:8080/api/v1/boards';
 const url = 'http://localhost:8080/api/v1/boards';
+const urlusers = 'http://localhost:8080/api/v1/users';
 // const url = `${GLOBAL_URL}/api/v1/boards`;
 
 
@@ -194,6 +195,22 @@ export const applyProject = async (board_id, data) => {
     return e;
   }
 };
+
+// 프로젝트 지원자 리스트
+export const getApplicants = async (user_id) => {
+  try {
+    const res = await axios.get(`${urlusers}/${user_id}/applicantsV2`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }  
+    });
+    return res;
+  } catch (e) {
+    console.log('프로젝트 지원자 리스트 Api 에러 발생', e);
+    return e;
+  }
+}
 
 // 프로젝트 승인
 

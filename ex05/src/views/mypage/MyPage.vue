@@ -1,6 +1,12 @@
 <template>
   <div class="w-4/6 mx-auto">
-    <RouterLink to="/mypage"><h1 class="pt-10 font-bold text-2xl mb-10">마이페이지</h1></RouterLink>
+    <RouterLink to="/mypage">
+      <div class="flex pt-10 mb-10">
+        <font-awesome-icon icon="user" class="h-6 w-5 p-1 mr-1 text-gray-300" />
+        <h1 class="font-bold text-2xl">마이페이지</h1>        
+      </div>
+    </RouterLink>
+
     <!-- 탭 메뉴 -->
     <div class="flex flex-wrap m-auto justify-around gap-5">
       <RouterLink to="/mypage/myprofile" class="mypage-tab mb-10 px-4 py-2 mx-2 hover:font-bold" active-class="font-bold border-b-2 border-[#d10000]">내 정보</RouterLink>

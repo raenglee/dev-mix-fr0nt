@@ -1,46 +1,45 @@
 <template>
   <div class="m-auto w-full">
-    <p class="text-lg font-bold mb-4">작성한 프로젝트</p>
+    <p class="text-lg font-bold">작성한 프로젝트</p>
     <div class="mx-2">
       <div class="flex flex-col gap-4 mb-10 rounded-lg">
-        <RouterLink to="/projectcreate"><button class="border p-1 rounded-lg text-sm float-right hover:bg-gray-200">글 쓰기</button></RouterLink>
-        <!-- 전체 선택 버튼 -->
-        <!-- <div class="flex justify-between">
-          <button type="button" class="border border-gray-400 w-12 rounded-full text-sm" @click="toggleAllCheckboxes">전체</button>
-          <button type="button" class="border border-gray-400 w-12 rounded-full text-sm">삭제</button>
-        </div> -->
-
+        <div class="flex justify-end">
+          <button class="border px-2 py-1 rounded-full text-sm hover:bg-gray-200" @click="goProCreate">글 쓰기</button>
+        </div>
         <div v-if="boardsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 100px">작성한 글이 없습니다.</div>
-
         <div class="p-1">
           <!-- 내가 작성한 프로젝트 배열 -->
           <div v-for="(board, index) in boardsarr" :key="index">
             <div class="board-item">
-              <RouterLink :to="`/projectview/${board.boardId}`" class="flex gap-2">
-                <div class="flex items-center justify-between w-full">
-                  <div class="flex gap-3 items-center w-full">
-                    <!-- 내용 텍스트, 말줄임표 적용 -->
-                    <div class="flex flex-col w-full">
-                      <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
-                      <div class="flex justify-between items-center w-full">
-                        <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
-                        <div class="flex items-center">
-                          <div class="bg-gray-200 rounded-full px-2 min-w-12 mr-2 text-sm">{{ board.location }}</div>
+              <div class="flex items-center justify-between w-full">
+                <div class="flex gap-3 items-center w-full">
+                  <!-- 내용 텍스트, 말줄임표 적용 -->
+                  <div class="flex flex-col w-full">
+                    <p class="text-sm text-gray-700 mb-1">{{ board.createdAt }}</p>
+                    <div class="flex justify-between items-center w-full">
+                      <!--지역, 제목, 댓글수, 수정, 삭제 같은라인 배치-->
+                      <div class="flex items-center">
+                        <div class="bg-gray-200 rounded-full px-2 mr-2 text-sm whitespace-nowrap">{{ board.location }}</div>
+                        <RouterLink :to="`/projectview/${board.boardId}`" class="flex gap-2">
                           <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
                             {{ board.title }}
                           </p>
-                          <p class="text-[#d10000] ml-2">[{{ board.commentCount }}]</p>
-                        </div>
-                        <!-- 수정 삭제를 제목과 댓글 수 오른쪽 끝에 위치시키기 -->
-                        <div class="flex gap-3 text-center justify-center items-center text-sm z-20">
-                          <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">수정</p>
-                          <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="doDelete">삭제</p>
-                        </div>
+                        </RouterLink>
+                        <p class="text-[#d10000] ml-2">[{{ board.commentCount }}]</p>
+                      </div>
+                      <!-- 수정 삭제를 제목과 댓글 수 오른쪽 끝에 위치시키기 -->
+                      <div class="flex flex-wrap gap-3 text-center justify-center items-center text-sm z-20">
+                        <RouterLink to="/projectapplicants">
+                          <button class="border rounded-full px-2 py-1 mr-10 whitespace-nowrap hover:bg-[#d10000] hover:text-white hover:border-[#d10000]">지원자 확인</button>
+                        </RouterLink>
+                        <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800 whitespace-nowrap">수정</p>
+                        <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800 whitespace-nowrap" @click="doDelete">삭제</p>
                       </div>
                     </div>
                   </div>
                 </div>
-              </RouterLink>
+              </div>
+
               <div class="my-4">
                 <hr class="border-t-1 border-gray-300" />
               </div>
@@ -50,62 +49,6 @@
           <!-- 내가 작성한 프로젝트 끝 -->
         </div>
       </div>
-    </div>
-
-    <p class="text-lg font-bold mb-4">받은 신청</p>
-    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
-      <div class="cursor-pointer border rounded-2xl p-4 relative project-card">
-        <div class="top-4 flex items-center justify-between">
-          <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">지역</div>
-        </div>
-        <div class="text-sm mb-2 text-gray-800">모집 마감일 | 0000.00.00</div>
-        <div class="text-xl font-bold mb-2 text-gray-800">작성한 글 제목</div>
-        <hr class="border-t border-gray-300 mb-2" />
-        <div class="text-xl cursor-pointer text-gray-800 text-center font-bold">지원자 <span class="text-[#d10000]">N</span></div>
-      </div>
-    </div> -->
-
-    <div class="flex flex-col w-full mb-4">
-      <!-- 정렬 필터 -->
-      <div class="flex text-sm text-gray-700 gap-2 mb-4 justify-end">
-        <p class="cursor-pointer hover:text-gray-500 transition-colors">신청 순</p>
-        <i>|</i>
-        <p class="cursor-pointer hover:text-gray-500 transition-colors">닉네임 순</p>
-        <i>|</i>
-        <p class="cursor-pointer hover:text-gray-500 transition-colors">프로젝트 순</p>
-      </div>
-
-      <!-- 테이블 -->
-      <table class="min-w-full border-separate border-spacing-0 rounded-lg overflow-hidden">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="border-b text-center p-3 text-gray-800 rounded-tl-lg">신청자</th>
-            <th class="border-b text-center p-3 text-gray-800">프로젝트명</th>
-            <th class="border-b text-center p-3 text-gray-800">포지션</th>
-            <th class="border-b text-center p-3 text-gray-800">내용</th>
-            <th class="border-b text-center p-3 text-gray-800">신청날짜</th>
-            <th class="border-b text-center p-3 text-gray-800 rounded-tr-lg">승인 여부</th>
-          </tr>
-        </thead>
-        <tbody class="text-center">
-          <tr class="">
-            <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">닉</td>
-            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
-            <td class="py-3 px-4 border-b">백엔드</td>
-            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">신청합니다</td>
-            <td class="py-3 px-4 border-b">2024.11.28</td>
-            <td class="py-3 px-4 border-b text-[#7371fc]">승인</td>
-          </tr>
-          <tr class="">
-            <td class="py-3 px-4 border-b text-gray-700 cursor-pointer hover:text-gray-400">고양이</td>
-            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">글제목</td>
-            <td class="py-3 px-4 border-b">디자이너</td>
-            <td class="py-3 px-4 border-b cursor-pointer hover:text-gray-400">신청합니다2</td>
-            <td class="py-3 px-4 border-b">2024.11.26</td>
-            <td class="py-3 px-4 border-b text-[#d10000]">거절</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
     <!-- <div class="top-4 flex items-center justify-between">
@@ -173,6 +116,7 @@
 <script setup>
 import { deleteProject, getPositions, getTechstacks } from '@/api/projectApi';
 import { userboards } from '@/api/userApi';
+import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import { ref, watchEffect } from 'vue';
 
@@ -233,6 +177,10 @@ const myboards = async () => {
   } catch (error) {
     console.error('내가 작성한 게시물 가져오기 에러: ', error);
   }
+};
+
+const goProCreate = () => {
+  router.push('/projectcreate');
 };
 
 // 게시글 삭제

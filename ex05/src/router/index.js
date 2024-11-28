@@ -12,7 +12,7 @@ import MyLikePost from '@/views/mypage/MyLikePost.vue';
 import MyProfile from '@/views/mypage/MyProfile.vue';
 import ProjectManagement from '@/views/mypage/ProjectManagement.vue';
 import Projectapplication from '@/views/mypage/ProjectApplication.vue';
-import ProjectApplicant from '@/views/project/ProjectApplicant.vue';
+import ProjectApplicants from '@/views/mypage/ProjectApplicants.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -87,9 +87,9 @@ const router = createRouter({
       component: Profile
     },
     {
-      path: '/projectapplicant',
-      name: 'projectapplicant',
-      component: ProjectApplicant
+      path: '/projectapplicants',
+      name: 'projectapplicants',
+      component: ProjectApplicants
     }
   ],
   scrollBehavior(to, from, savedPosition) {
