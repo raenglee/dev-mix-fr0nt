@@ -10,7 +10,9 @@
         <!--🌐로그인 한 후 아이콘-->
         <template v-if="useStore.loginCheck">
           <div class="flex space-x-1">
-            <RouterLink to="/projectapplicants" class="block px-4 py-2 text-white"> 지원자 페이지 </RouterLink>
+            <RouterLink to="/projectapplicants" class="block px-4 py-2 text-white"> 
+              <font-awesome-icon icon="CircleCheck" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />  
+            </RouterLink>
             <div class="relative" @mouseenter="openAlarmDropdown" @mouseleave="closeAlarmDropdown">
               <font-awesome-icon
                 icon="bell"

@@ -26,25 +26,65 @@
             </tr>
           </thead>
           <tbody v-for="(applicant, index) in applicantsarr" :key="applicant.id" class="text-center">
-            <tr class="">
+            <tr>
               <td class="py-3 px-4 text-sm border-b whitespace-nowrap text-gray-700 cursor-pointer hover:text-gray-400">{{ applicant.userNickname }}</td>
               <RouterLink :to="`/projectview/${applicant.boardId}`">
-                <td class="py-3 px-4 text-sm border-b whitespace-nowrap cursor-pointer hover:text-gray-400" @click="goProject">{{ applicant.boardTitle }}</td>
+                <td class="py-3 px-4 text-sm border-b whitespace-nowrap cursor-pointer hover:text-gray-400" @click="goProject" style="display: block">{{ applicant.boardTitle }}</td>
               </RouterLink>
               <td class="py-3 px-4 text-sm border-b whitespace-nowrap">{{ applicant.positionName }}</td>
-              <td class="py-3 px-4 text-sm border-b whitespace-nowrap truncate max-w-[500px] overflow-hidden cursor-pointer hover:text-gray-400">{{ applicant.applyNote }}</td>
+              <td class="py-3 px-4 text-sm border-b whitespace-nowrap truncate max-w-[500px] overflow-hidden cursor-pointer hover:text-gray-400" @click="openModal(applicant)">
+                {{ applicant.applyNote }}
+              </td>
               <td class="py-3 px-4 text-sm border-b whitespace-nowrap">{{ applicant.applyDate }}</td>
               <td class="py-3 px-4 text-sm border-b whitespace-nowrap text-gray-400">{{ applicant.participationStatus }}</td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!--지원모달-->
+      <div v-if="showModal" class="modal-container" @click.self="closeModal">
+        <div class="modal-content">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-xl text-center">지원 상세 내용</h2>
+            <button class="h-4 w-4" @click="closeModal"><img src="/img/x.png" /></button>
+          </div>
+          <div class="flex flex-col mb-4 gap-2">
+            <p class="font-bold">지원 직군</p>
+            <p class="text-sm bg-gray-100 rounded-lg p-4">{{ selectedApplicant?.positionName }}</p>
+            <p class="font-bold">지원 사유 및 한마디</p>
+            <p class="text-sm bg-gray-100 rounded-lg p-4">{{ selectedApplicant?.applyNote }}</p>
+          </div>
+          <div class="flex justify-center gap-3 mb-4">
+            <button type="button" class="border border-gray-300 bg-gray-300 rounded-full py-1 px-3" @click="closeModal">거절</button>
+            <button type="submit" class="border border-[#d10000] bg-[#d10000] text-white rounded-full py-1 px-3" @click="admit">승인</button>
+          </div>
+
+          <p class="text-center text-sm text-gray-500 mb-3">승인을 누르시면, 해당 지원자는 정식으로 프로젝트 참가자가 됩니다.</p>
+          <!-- <h3 class="text-sm text-gray-700 font-bold mb-2">유의사항</h3>
+          <ul class="text-xs text-gray-400 flex flex-col gap-1">
+            <li>프로젝트에게 가입하신 이메일 정보에 제공됩니다.</li>
+            <li>프로젝트에서 작업한 저작권에 프로젝트에 귀속됩니다.</li>
+            <li>프로젝트 분쟁사항은 데브믹스에서 책임지지 않습니다.</li>
+            <li>리더가 14일동안 승인하지 않으면 자동 취소됩니다.</li>
+          </ul> -->
+        </div>
+      </div>
+
+      <!-- 승인대기 모달
+      <div v-if="isConfirmModal" class="modal-container" @click.self="closeConfirmModal">
+        <div class="modal-content">
+          <h2 class="modal-title">지원이 완료되었습니다!</h2>
+          <p>작성자가 승인하면 프로젝트에 참가하게 됩니다.</p>
+          <button @click="closeConfirmModal">확인</button>
+        </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { getApplicants } from '@/api/projectApi';
+import { admitApplicants, getApplicants } from '@/api/applyApi';
 import { useUserStore } from '@/store/userStore';
 import { ref, watchEffect } from 'vue';
 
@@ -52,6 +92,7 @@ import { ref, watchEffect } from 'vue';
 const useStore = useUserStore();
 const applicantsarr = ref([]);
 
+// 지원자 정보 Api
 const applicants = async () => {
   try {
     const res = await getApplicants(useStore.userId);
@@ -62,11 +103,58 @@ const applicants = async () => {
     if (Array.isArray(res.data.result)) {
       applicantsarr.value = res.data.result;
     } else {
-      // console.error('지원자 res, data, result 확인해보기: ', res);
+      console.error('지원자 res, data, result 확인해보기: ', res);
     }
   } catch (error) {
-    // console.error('지원자 가져오기 에러: ', error);
+    console.error('지원자 가져오기 에러: ', error);
   }
+};
+
+// 지원자 정보
+const selectedApplicant = ref(null);
+
+// 지원자 지원내용 상세 정보 모달
+const openModal = (applicant) => {
+  selectedApplicant.value = applicant; // 클릭한 지원자 정보를 모달에 전달
+  showModal.value = true;
+};
+
+const showModal = ref(false); // 모달 상태
+const isConfirmModal = ref(false); // 승인 완료 모달 상태
+
+//지원자 승인 Api
+const admit = async () => {
+  console.log('지원정보', selectedApplicant.value);
+
+  if (selectedApplicant.value) {
+    const { boardId, userNickname, positionName } = selectedApplicant.value;
+    console.log('보드아이디,닉네임,포지션', boardId, userNickname, positionName);
+
+    const data = {
+      boardId,
+      userNickname,
+      positionName
+    };
+
+    try {
+      const res = await admitApplicants(data);
+      if (res.status === 200) {
+        isConfirmModal.value = true;
+        alert('승인하였습니다.');
+        closeModal(); // 모달 닫기
+        applicants();
+      } else {
+        console.error('승인 실패', res);
+      }
+    } catch (error) {
+      console.error('지원자 승인 API 호출 에러', error);
+    }
+  }
+};
+
+// 모달을 닫기 위한 함수
+const closeModal = () => {
+  showModal.value = false;
 };
 
 watchEffect(() => {
@@ -74,4 +162,29 @@ watchEffect(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.isVisible {
+  display: none;
+}
+</style>

@@ -3,9 +3,7 @@ import axios from 'axios';
 
 // const url = 'http://192.168.0.61:8080/api/v1/boards';
 const url = 'http://localhost:8080/api/v1/boards';
-const urlusers = 'http://localhost:8080/api/v1/users';
 // const url = `${GLOBAL_URL}/api/v1/boards`;
-
 
 // 프로젝트 전체 리스트
 export const listProject = async (pageNumber = 1, pageSize = 16) => {
@@ -196,30 +194,29 @@ export const applyProject = async (board_id, data) => {
   }
 };
 
-// 프로젝트 지원자 리스트
-export const getApplicants = async (user_id) => {
-  try {
-    const res = await axios.get(`${urlusers}/${user_id}/applicantsV2`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }  
-    });
-    return res;
-  } catch (e) {
-    console.log('프로젝트 지원자 리스트 Api 에러 발생', e);
-    return e;
-  }
-}
-
-// 프로젝트 승인
-
 // 프로젝트 스크랩(북마크)
 export const scrapProject = async (board_id, data) => {
   // console.log(`${url}/${board_id}/scrap`);
   try {
     // console.log('북마크 axios 호출', data, '보드아이디', board_id);
     const res = await axios.put(`${url}/${board_id}/scrap`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return res;
+  } catch (e) {
+    console.log('북마크 Api 에러 발생', e);
+    return e;
+  }
+};
+
+// 전체 프로젝트 리스트 + 스크랩 리스트
+export const scrapProjectlist = async (board_id, data) => {
+  try {
+    // console.log('북마크 axios 호출', data, '보드아이디', board_id);
+    const res = await axios.get(`${url}/scrap-list`, data, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`
