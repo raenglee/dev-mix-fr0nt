@@ -160,11 +160,29 @@ export const saveComments = async (board_id, data) => {
   }
 };
 
+// 댓글 수정하기
+export const updateComments = async (board_id, data) => {
+  try {
+    // console.log('댓글수정 axios 호출', data, '보드아이디', board_id);
+    // console.log(`${url}/${board_id}/comments`);
+    const res = await axios.put(`${url}/${board_id}/comments`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return res;
+  } catch (e) {
+    console.log('댓글 수정 Api 에러 발생', e);
+    return e;
+  }
+};
+
 // 댓글 삭제하기
 export const deleteComments = async (board_id, comment_id) => {
   try {
-    console.log('댓글삭제 axios 호출:', '보드id', board_id, '댓글id', comment_id);
-    console.log(`${url}/${board_id}/comments/${comment_id}`);
+    // console.log('댓글삭제 axios 호출:', '보드id', board_id, '댓글id', comment_id);
+    // console.log(`${url}/${board_id}/comments/${comment_id}`);
     const res = await axios.delete(`${url}/${board_id}/comments/${comment_id}`, {
       headers: {
         'Content-Type': 'application/json',

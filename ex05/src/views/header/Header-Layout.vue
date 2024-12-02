@@ -10,9 +10,6 @@
         <!--🌐로그인 한 후 아이콘-->
         <template v-if="useStore.loginCheck">
           <div class="flex space-x-1">
-            <RouterLink to="/projectapplicants" class="block px-4 py-2 text-white"> 
-              <font-awesome-icon icon="CircleCheck" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />  
-            </RouterLink>
             <div class="relative" @mouseenter="openAlarmDropdown" @mouseleave="closeAlarmDropdown">
               <font-awesome-icon
                 icon="bell"
@@ -57,10 +54,13 @@
                     <p class="px-4 py-2 font-bold text-lg">반갑습니다 {{ useStore.nickname }} 님</p>
                   </li>
                   <li>
-                    <RouterLink to="/mypage/myprofile" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020]"> 마이 페이지 </RouterLink>
+                    <RouterLink to="/mypage/myprofile" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold"> 마이 페이지 </RouterLink>
                   </li>
                   <li>
-                    <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left">로그아웃</button>
+                    <RouterLink to="/projectapplicants" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold">지원자 확인</RouterLink>
+                  </li>
+                  <li>
+                    <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left hover:font-bold">로그아웃</button>
                   </li>
                   <!--테스트-->
                 </ul>
@@ -142,6 +142,7 @@ watchEffect(async () => {
 // 드롭다운 상태 관리
 const isPeopleDropdownOpen = ref(false);
 const isAlarmDropdownOpen = ref(false);
+const isapplyDropdownOpen = ref(false);
 
 // 마이페이지 드롭다운 열기
 const openPeopleDropdown = () => {

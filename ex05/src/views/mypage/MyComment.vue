@@ -4,10 +4,10 @@
       <div class="flex flex-col space-x-1 space-y-4">
         <!-- 전체 선택 버튼 -->
         <div class="flex justify-between">
-          <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="toggleAllCheckboxes">전체</button>
-          <button type="button" class="border border-gray-300 w-12 rounded-full text-sm hover:bg-gray-300" @click="deleteSelectedComments">삭제</button>
+          <button type="button" class="border whitespace-nowrap rounded-full text-sm hover:bg-gray-200 px-2 py-1" @click="toggleAllCheckboxes">전체</button>
+          <button type="button" class="border whitespace-nowrap rounded-full text-sm hover:bg-gray-200 px-2 py-1" @click="deleteSelectedComments">삭제</button>
         </div>
-
+      
         <!-- 댓글이 없을 경우 -->
         <div v-if="commentsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 500px;">작성한 댓글이 없습니다.</div>
 
@@ -58,7 +58,7 @@ const useStore = useUserStore();
 const mycomments = async () => {
   try {
     const res = await usercomments(useStore.userId);
-    console.log('mycomments response: ', res);
+    // console.log('댓글 목록: ', res);
 
     // 데이터 구조 확인 후, commentsarr에 할당
     if (Array.isArray(res.result)) {

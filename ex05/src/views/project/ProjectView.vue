@@ -101,8 +101,8 @@
         <div class="ml-30 justify-center items-center w-full">
           <div class="flex items-center pt-3">
             <div class="flex items-center w-8 h-8">
-               <img v-if="useStore.profileImage" :src="useStore.profileImage" class="h-8 w-8 rounded-full" />
-                <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
+              <img v-if="useStore.profileImage" :src="useStore.profileImage" class="h-8 w-8 rounded-full" />
+              <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
             </div>
             <p class="ml-3">{{ useStore.nickname }}</p>
           </div>
@@ -125,10 +125,17 @@
                 <p class="font-semibold ml-2 text-gray-800">{{ comment.nickname }}</p>
               </div>
               <div class="flex items-center justify-between mt-2 mx-2">
-                <!-- 댓글 내용 -->
-                <p class="text-gray-800 flex-1">{{ comment.commentContent }}</p>
-                <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2">수정</button>
-                <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="commentDelete(comment.id)">삭제</button>
+                <!--댓글 수정 시-->
+                <div v-if="comment.isEditing">
+                  <textarea v-model="comment.newContent" class="w-full p-3 h-20 border border-gray-200 rounded-md resize-none bg-gray-100"></textarea>
+                  <button @click="commentupdate(comment.id)" class="text-sm ml-2">저장</button>
+                </div>
+                <div v-else>
+                  <!-- 댓글 내용 -->
+                  <p class="text-gray-800 flex-1">{{ comment.commentContent }}</p>
+                  <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="startEditing(comment)">수정</button>
+                  <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="commentDelete(comment.id)">삭제</button>
+                </div>
               </div>
               <p class="text-xs mt-3 mb-4 mx-2 text-gray-500">{{ comment.createdAt }}</p>
               <div>
@@ -141,51 +148,48 @@
     </section>
   </div>
 
-
   <!--지원모달-->
   <div v-if="showModal" class="modal-container" @click.self="closeModal">
     <div class="modal-content">
-      <button class="close-button" @click="closeModal">x</button>
-      <h2 class="modal-title">지원하시겠습니까?</h2>
-      <form @submit.prevent="submitForm">
-        <div class="form-group">
-          <label for="position">지원 직군</label>
-          <!-- <input type="text" id="position" v-model="position" placeholder="지원 직군" /> -->
-          <p>{{ positionName }}</p>
-        </div>
-        <div class="form-group">
-          <label for="note">지원 사유 및 한마디</label>
-          <textarea id="note" v-model="note" placeholder="지원 사유 및 한마디"></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" @click="closeModal">아니오</button>
-          <button type="submit" class="btn-confirm" @click="confirmSubmit">예</button>
-        </div>
-        <p class="info-text">예를 누르시면, 정보제공 / 유의사항에 동의 한 것으로 간주합니다.</p>
-
-        <h3 class="notes-title">유의사항</h3>
-        <ul class="notes">
-          <li>프로젝트 리더에게 가입하신 이메일 정보가 제공됩니다.</li>
-          <li>프로젝트에서 작업한 저작권에 프로젝트에 귀속됩니다.</li>
-          <li>프로젝트 분쟁사항은 데브믹스에서 책임지지 않습니다.</li>
-          <li>리더가 14일동안 승인하지 않으면 자동 취소됩니다.</li>
-        </ul>
-      </form>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-bold text-xl text-center">지원 하시겠습니까?</h2>
+        <button class="h-4 w-4" @click="closeModal"><img src="/img/x.png" /></button>
+      </div>
+      <div class="flex flex-col mb-4 gap-2">
+        <label for="position" class="font-bold">지원 직군</label>
+        <p class="text-sm bg-gray-100 rounded-lg p-4 font-bold">{{ positionName }}</p>
+        <label for="note" class="font-bold">지원 사유 및 한마디</label>
+        <textarea id="note" v-model="note" placeholder="지원 사유 및 한마디"></textarea>
+      </div>
+      <div class="flex justify-center gap-3 mb-4">
+        <button type="button" class="border border-gray-300 bg-gray-300 rounded-full py-1 px-3 w-20" @click="closeModal">아니오</button>
+        <button class="border border-[#d10000] bg-[#d10000] text-white rounded-full py-1 px-3 w-20" @click="confirmSubmit">예</button>
+      </div>
+      <p class="text-center text-xs text-gray-500 mb-3">예를 누르시면, 정보제공 / 유의사항에 동의 한 것으로 간주합니다.</p>
+      <h3 class="text-sm text-gray-700 font-bold mb-2">유의사항</h3>
+      <ul class="text-xs text-gray-400 flex flex-col gap-1">
+        <li>프로젝트 리더에게 가입하신 이메일 정보가 제공됩니다.</li>
+        <li>프로젝트에서 작업한 저작권에 프로젝트에 귀속됩니다.</li>
+        <li>프로젝트 분쟁사항은 데브믹스에서 책임지지 않습니다.</li>
+        <li>리더가 14일동안 승인하지 않으면 자동 취소됩니다.</li>
+      </ul>
     </div>
   </div>
 
   <!-- 승인대기 모달 -->
   <div v-if="isConfirmModal" class="modal-container" @click.self="closeConfirmModal">
-    <div class="modal-content">
-      <h2 class="modal-title">지원이 완료되었습니다!</h2>
-      <p>작성자가 승인하면 프로젝트에 참가하게 됩니다.</p>
-      <button @click="closeConfirmModal">확인</button>
+    <div class="bg-white p-4 rounded-xl shadow-xl">
+      <h2 class="font-bold text-xl flex justify-center text-center mb-4">지원이 완료되었습니다!</h2>
+      <p class="text-gray-800 text-sm mb-4">작성자가 승인하면 프로젝트에 참가하게 됩니다.</p>
+      <div class="flex justify-center">
+        <button @click="closeConfirmModal" class="font-bold text-center border bg-white rounded-md py-1 px-3 hover:bg-gray-200">확인</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { getProjectView, getCommentsView, saveComments, deleteProject, deleteComments } from '@/api/projectApi';
+import { getProjectView, getCommentsView, saveComments, deleteProject, deleteComments, updateComments } from '@/api/projectApi';
 import router from '@/router';
 import { ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
@@ -296,17 +300,45 @@ const commentsave = async () => {
   }
   alert('에러: ' + res.data);
 };
-console.log('useStore.nickname.value: ' + useStore.nickname);
+// console.log('useStore.nickname.value: ' + useStore.nickname);
+
+// 댓글 수정시 텍스트박스로 변경
+const startEditing = (comment) => {
+  comment.isEditing = true;
+  comment.newContent = comment.commentContent; // 기존 댓글 내용을 newContent에 설정
+};
+
+// 댓글 수정
+const commentupdate = async (commentId) => {
+  const comment = comments.value.find((c) => c.id === commentId);
+
+  const data = {
+    id: commentId,
+    content: comment.newContent
+  };
+
+  const res = await updateComments(board_id.value, data);
+  if (res.status === 200) {
+    alert('댓글이 수정되었습니다.');
+    const updatedComments = await getCommentsView(board_id.value);
+    if (updatedComments.status === 200) {
+      comments.value = updatedComments.data.result; // 댓글 목록 갱신
+    }
+    return;
+  }
+  alert('에러: ' + res.data);
+};
+
 // 댓글 삭제
 const commentDelete = async (id) => {
-  console.log('댓글 id:', id);
-  console.log('보드 id:', route.params.board_id);
+  // console.log('댓글 id:', id);
+  // console.log('보드 id:', route.params.board_id);
   const isConfirmed = window.confirm('댓글을 삭제 하시겠습니까?');
   if (isConfirmed) {
     try {
       const res = await deleteComments(route.params.board_id, id);
       if (res.status === 200) {
-        alert('댓글이 정상적으로 삭제되었습니다.');
+        alert('댓글이 삭제되었습니다.');
         const updatedComments = await getCommentsView(route.params.board_id);
         if (updatedComments.status === 200) {
           comments.value = updatedComments.data.result; // 댓글 목록 갱신
@@ -400,34 +432,6 @@ const closeConfirmModal = () => {
   position: relative;
 }
 
-.close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.modal-title {
-  text-align: left;
-  color: #333;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-  text-align: left;
-}
-
-label {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
 input,
 textarea {
   width: 100%;
@@ -441,71 +445,6 @@ textarea {
   height: 120px;
   resize: none;
   overflow-y: auto;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.btn-cancel,
-.btn-confirm {
-  width: 100px;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-}
-
-.btn-cancel {
-  width: 110px;
-  height: 50px;
-  background-color: #ddd;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 30px;
-  cursor: pointer;
-}
-
-.btn-confirm {
-  width: 110px;
-  height: 50xp;
-  background-color: #e03a3e;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 30px;
-  cursor: pointer;
-}
-
-.info-text {
-  font-size: 11px;
-  text-align: center;
-  color: #777;
-  margin-top: 1rem;
-}
-
-.notes-title {
-  font-size: 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-  text-align: left;
-}
-
-.notes {
-  font-size: 0.75rem;
-  color: #555;
-  margin-top: 1rem;
-  padding-left: 1rem;
-}
-
-.notes li {
-  margin-bottom: 0.5rem;
-  text-align: left;
-  list-style: disc;
 }
 
 .isVisible {

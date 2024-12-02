@@ -166,7 +166,7 @@ const useStore = useUserStore();
 const myboards = async () => {
   try {
     const res = await userboards(useStore.userId);
-    console.log('myboards response: ', res);
+    // console.log('보드 목록: ', res);
 
     // 데이터 구조 확인 후, boardsarr에 할당
     if (Array.isArray(res.result)) {

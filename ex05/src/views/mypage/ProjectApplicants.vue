@@ -14,6 +14,7 @@
         </div>
 
         <!-- 테이블 -->
+
         <table class="min-w-full border-separate border-spacing-0 rounded-lg overflow-hidden">
           <thead class="bg-gray-50">
             <tr>
@@ -25,6 +26,16 @@
               <th class="border-b text-center p-3 text-gray-800 rounded-tr-lg">승인 여부</th>
             </tr>
           </thead>
+
+          <!-- 지원자가 없는 경우 -->
+          <tbody v-if="applicantsarr.length === 0">
+            <tr>
+              <td colspan="6" class="text-center text-gray-500 py-8">
+                <div class="flex items-center justify-center w-full">프로젝트 지원자가 없습니다.</div>
+              </td>
+            </tr>
+          </tbody>
+
           <tbody v-for="(applicant, index) in applicantsarr" :key="applicant.id" class="text-center">
             <tr>
               <td class="py-3 px-4 text-sm border-b whitespace-nowrap text-gray-700 cursor-pointer hover:text-gray-400">{{ applicant.userNickname }}</td>
@@ -42,7 +53,7 @@
         </table>
       </div>
 
-      <!--지원모달-->
+      <!--지원 모달-->
       <div v-if="showModal" class="modal-container" @click.self="closeModal">
         <div class="modal-content">
           <div class="flex items-center justify-between mb-4">

@@ -390,14 +390,14 @@ const save = async () => {
   formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
   formData.append('boardImage', file.value);
 
-  console.log('파일정보', file.value);
+  // console.log('파일정보', file.value);
 
   // const formData = new FormData();
   // formData.append('postBoardRequest', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
-  console.log('저장내용', data);
+  // console.log('저장내용', data);
   const res = await saveProject(formData);
-  console.log(JSON.stringify(formData));
+  // console.log(JSON.stringify(formData));
   if (res.status === 200) {
     alert('글이 작성되었습니다.');
     router.push({ name: 'projectlist' });
