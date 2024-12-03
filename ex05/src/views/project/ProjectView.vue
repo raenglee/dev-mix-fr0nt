@@ -55,20 +55,22 @@
                 <p class="w-1/3 text-left">{{ position.positionName }}</p>
                 <p class="w-1/3 text-center">{{ position.currentCount }}/{{ position.requiredCount }}</p>
                 <button
-                  v-if="!(nickname == loggedInUserNickname)"
+                  v-if="!(nickname == loggedInUserNickname) && !isPending"
                   @click="openModal(position.positionName)"
                   class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200"
                 >
                   지원
                 </button>
 
-                <button v-else-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 py-1 bg-gray-300 cursor-not-allowed">
+                <button v-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 py-1 bg-gray-300 cursor-not-allowed">
                   승인대기
                 </button>
 
                 <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border text-sm flex-shrink-0 border-gray-200 rounded-full min-w-11 h-8 px-4 py-1 hover:bg-gray-200">
                   지원자 확인
                 </button>
+
+                <!-- <button v-if="isPending" class="border border-gray-300 bg-gray-300 text-gray-500 rounded-full py-1 px-3 w-20" disabled>지원되었습니다</button> -->
               </div>
             </div>
           </div>
@@ -119,25 +121,29 @@
           <div class="my-6 mx-7 justify-center flex flex-col gap-5" style="width: 90%">
             <div v-for="comment in comments" :key="comment.id">
               <!-- 댓글 방식 확인 {{ comment }} -->
-              <div class="flex items-center mx-2">
+              <div class="flex items-center mx-2 mb-4">
                 <img v-if="comment.profileImage" :src="comment.profileImage" class="h-8 w-8 rounded-full" />
                 <img v-else src="/img/people.png" class="h-8 w-8 rounded-full" />
-                <p class="font-semibold ml-2 text-gray-800">{{ comment.nickname }}</p>
+                <p class="font-semibold ml-2 text-gray-800">{{ comment.userNickName }}</p>
               </div>
-              <div class="flex items-center justify-between mt-2 mx-2">
-                <!--댓글 수정 시-->
-                <div v-if="comment.isEditing">
-                  <textarea v-model="comment.newContent" class="w-full p-3 h-20 border border-gray-200 rounded-md resize-none bg-gray-100"></textarea>
-                  <button @click="commentupdate(comment.id)" class="text-sm ml-2">저장</button>
-                </div>
-                <div v-else>
-                  <!-- 댓글 내용 -->
-                  <p class="text-gray-800 flex-1">{{ comment.commentContent }}</p>
-                  <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="startEditing(comment)">수정</button>
-                  <button v-if="comment.nickname == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="commentDelete(comment.id)">삭제</button>
+              <!--댓글 수정 시-->
+              <div v-if="comment.isEditing" class="flex">
+                <textarea v-model="comment.newContent" class="w-full ml-4 p-3 h-10 border border-gray-200 rounded-md focus:outline-none ring-gray-100 resize-none bg-gray-100"></textarea>
+                <div class="">
+                  <button @click="commentupdate(comment.commentId)" class="ml-4 border border-gray-200 rounded-md h-10 w-20 px-2 text-base hover:bg-gray-100">수정</button>
+                  <button @click="updatecancle" class="ml-4 text-sm hover:underline text-gray-500">취소</button>
                 </div>
               </div>
-              <p class="text-xs mt-3 mb-4 mx-2 text-gray-500">{{ comment.createdAt }}</p>
+              <div v-else class="flex justify-between">
+                <!-- 댓글 내용 -->
+                <p class="text-gray-800 ml-4">{{ comment.content }}</p>
+                <div>
+                  <button v-if="comment.userNickName == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="startEditing(comment)">수정</button>
+                  <button v-if="comment.userNickName == loggedInUserNickname" class="text-sm hover:underline ml-2" @click="commentDelete(comment.commentId)">삭제</button>
+                </div>
+              </div>
+              <!-- <p v-if="comment.lastModifiedAt" class="text-xs mt-3 mb-4 mx-2 text-gray-500">{{ comment.lastModifiedAt }}</p> -->
+              <p class="text-xs mt-3 mb-4 mx-2 ml-4 text-gray-500">{{ comment.lastModifiedAt }}</p>
               <div>
                 <hr class="border-t border-gray-200" />
               </div>
@@ -277,6 +283,7 @@ watchEffect(async () => {
   if (res.status === 200 && res.data.result) {
     comments.value = res.data.result; // 댓글 데이터 배열을 할당
   }
+  // console.log(comments.value);
 });
 
 // 댓글 작성
@@ -305,13 +312,14 @@ const commentsave = async () => {
 // 댓글 수정시 텍스트박스로 변경
 const startEditing = (comment) => {
   comment.isEditing = true;
-  comment.newContent = comment.commentContent; // 기존 댓글 내용을 newContent에 설정
+  comment.newContent = comment.content; // 기존 댓글 내용을 newContent에 설정
 };
 
 // 댓글 수정
 const commentupdate = async (commentId) => {
-  const comment = comments.value.find((c) => c.id === commentId);
-
+  const comment = comments.value.find((c) => c.commentId === commentId);
+  console.log('댓글', comments.value);
+  // console.log('댓글id',commentId)
   const data = {
     id: commentId,
     content: comment.newContent
@@ -327,6 +335,12 @@ const commentupdate = async (commentId) => {
     return;
   }
   alert('에러: ' + res.data);
+};
+
+const updatecancle = async () => {
+  comments.value.forEach((comment) => {
+    comment.isEditing = false;
+  });
 };
 
 // 댓글 삭제
@@ -387,12 +401,15 @@ const confirmSubmit = async () => {
       positionName: positionName.value,
       note: note.value
     };
+    console.log('isPending:', isPending.value);
 
     const res = await applyProject(route.params.board_id, data);
-    console.log('보드아이디,내용', route.params.board_id, data);
-    console.log('지원하기 모달', res);
+    // console.log('보드아이디,내용', route.params.board_id, data);
+    // console.log('지원하기 모달', res);
+    
     if (res.status === 200) {
       isPending.value = true;
+      console.log('isPending:', isPending.value);
       closeModal(); // 기존 지원 모달 닫기
       isConfirmModal.value = true; // 완료 모달 열기
     } else {
@@ -404,7 +421,7 @@ const confirmSubmit = async () => {
   }
 };
 
-// 완료 모달 닫기
+// 지원완료 모달 닫기
 const closeConfirmModal = () => {
   isConfirmModal.value = false;
 };

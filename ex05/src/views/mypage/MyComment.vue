@@ -7,9 +7,9 @@
           <button type="button" class="border whitespace-nowrap rounded-full text-sm hover:bg-gray-200 px-2 py-1" @click="toggleAllCheckboxes">전체</button>
           <button type="button" class="border whitespace-nowrap rounded-full text-sm hover:bg-gray-200 px-2 py-1" @click="deleteSelectedComments">삭제</button>
         </div>
-      
+
         <!-- 댓글이 없을 경우 -->
-        <div v-if="commentsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 500px;">작성한 댓글이 없습니다.</div>
+        <div v-if="commentsarr.length === 0" class="text-center text-gray-500 py-8" style="height: 500px">작성한 댓글이 없습니다.</div>
 
         <!-- 내가 작성한 댓글 내용 반복 -->
         <div v-for="(comment, index) in commentsarr" :key="comment.id" class="flex flex-col space-y-1">
@@ -20,10 +20,12 @@
 
               <!-- 댓글내용 텍스트, 말줄임표 적용 -->
               <div class="flex flex-col w-full">
-                <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
-                  {{ comment.content }}
-                </p>
-                <p class="text-sm text-gray-500">{{ comment.boardTitle }}</p>
+                <RouterLink :to="`/projectview/${comment.boardId}`">
+                  <p class="text-gray-700 w-full truncate max-w-[500px] whitespace-nowrap overflow-hidden">
+                    {{ comment.content }}
+                  </p>
+                  <p class="text-sm text-gray-500">{{ comment.boardTitle }}</p>
+                </RouterLink>
               </div>
             </div>
 
@@ -31,7 +33,7 @@
             <div class="flex gap-3 text-center justify-end items-center text-sm">
               <div class="text-sm text-gray-500 flex-shrink-0">{{ comment.createdAt }}</div>
               <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800">수정</p>
-              <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="commentDelete(comment.id)">삭제</p>
+              <p class="flex-shrink-0 text-gray-500 cursor-pointer hover:text-gray-800" @click="commentDelete(comment.commentId)">삭제</p>
             </div>
           </div>
           <div class="mt-2">
@@ -58,7 +60,7 @@ const useStore = useUserStore();
 const mycomments = async () => {
   try {
     const res = await usercomments(useStore.userId);
-    // console.log('댓글 목록: ', res);
+    console.log('댓글 목록: ', res);
 
     // 데이터 구조 확인 후, commentsarr에 할당
     if (Array.isArray(res.result)) {

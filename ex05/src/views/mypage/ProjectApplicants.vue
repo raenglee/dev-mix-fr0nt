@@ -138,13 +138,14 @@ const admit = async () => {
   console.log('지원정보', selectedApplicant.value);
 
   if (selectedApplicant.value) {
-    const { boardId, userNickname, positionName } = selectedApplicant.value;
+    const { boardId, userNickname, positionName, participationStatus } = selectedApplicant.value;
     console.log('보드아이디,닉네임,포지션', boardId, userNickname, positionName);
 
     const data = {
       boardId,
       userNickname,
-      positionName
+      positionName,
+      participationStatus
     };
 
     try {
