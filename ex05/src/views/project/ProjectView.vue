@@ -57,16 +57,16 @@
                 <button
                   v-if="!(nickname == loggedInUserNickname) && !isPending"
                   @click="openModal(position.positionName)"
-                  class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 hover:bg-gray-200"
+                  class="border border-gray-200 rounded-full whitespace-nowrap px-4 hover:bg-gray-200"
                 >
                   지원
                 </button>
 
-                <button v-if="isPending && nickname !== loggedInUserNickname" class="border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 px-4 py-1 bg-gray-300 cursor-not-allowed">
+                <button v-if="isPending && nickname !== loggedInUserNickname" class="border border-gray-200 rounded-full whitespace-nowrap px-4 py-1 bg-gray-300 item-center cursor-not-allowed">
                   승인대기
                 </button>
 
-                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border text-sm flex-shrink-0 border-gray-200 rounded-full min-w-11 h-8 px-4 py-1 hover:bg-gray-200">
+                <button v-if="nickname == loggedInUserNickname" @click="goToProjectApp" class="border text-sm border-gray-200 rounded-full whitespace-nowrap px-4 py-1 hover:bg-gray-200">
                   지원자 확인
                 </button>
 

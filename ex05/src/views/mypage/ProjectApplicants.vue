@@ -67,18 +67,11 @@
             <p class="text-sm bg-gray-100 rounded-lg p-4">{{ selectedApplicant?.applyNote }}</p>
           </div>
           <div class="flex justify-center gap-3 mb-4">
-            <button type="button" class="border border-gray-300 bg-gray-300 rounded-full py-1 px-3" @click="closeModal">거절</button>
+            <button type="button" class="border border-gray-300 bg-gray-300 rounded-full py-1 px-3" @click="reject">거절</button>
             <button type="submit" class="border border-[#d10000] bg-[#d10000] text-white rounded-full py-1 px-3" @click="admit">승인</button>
           </div>
 
           <p class="text-center text-sm text-gray-500 mb-3">승인을 누르시면, 해당 지원자는 정식으로 프로젝트 참가자가 됩니다.</p>
-          <!-- <h3 class="text-sm text-gray-700 font-bold mb-2">유의사항</h3>
-          <ul class="text-xs text-gray-400 flex flex-col gap-1">
-            <li>프로젝트에게 가입하신 이메일 정보에 제공됩니다.</li>
-            <li>프로젝트에서 작업한 저작권에 프로젝트에 귀속됩니다.</li>
-            <li>프로젝트 분쟁사항은 데브믹스에서 책임지지 않습니다.</li>
-            <li>리더가 14일동안 승인하지 않으면 자동 취소됩니다.</li>
-          </ul> -->
         </div>
       </div>
 
@@ -122,30 +115,68 @@ const applicants = async () => {
 };
 
 // 지원자 정보
-const selectedApplicant = ref(null);
+// const selectedApplicant = ref(null);
+const selectedApplicant = ref({
+  boardId: 0,
+  userNickname: '',
+  positionName: '',
+  participationStatus: ''
+});
 
 // 지원자 지원내용 상세 정보 모달
+const showModal = ref(false);
 const openModal = (applicant) => {
   selectedApplicant.value = applicant; // 클릭한 지원자 정보를 모달에 전달
   showModal.value = true;
 };
 
-const showModal = ref(false); // 모달 상태
-const isConfirmModal = ref(false); // 승인 완료 모달 상태
+// 지원자 승인 모달상태
+const isConfirmModal = ref(false);
 
-//지원자 승인 Api
-const admit = async () => {
-  console.log('지원정보', selectedApplicant.value);
+//지원자 거절 Api
+const reject = async () => {
+  console.log('거절 시 지원정보', selectedApplicant.value);
 
   if (selectedApplicant.value) {
     const { boardId, userNickname, positionName, participationStatus } = selectedApplicant.value;
-    console.log('보드아이디,닉네임,포지션', boardId, userNickname, positionName);
+    console.log('보드아이디,닉네임,포지션, 승인상태', boardId, userNickname, positionName, participationStatus);
 
     const data = {
       boardId,
       userNickname,
       positionName,
-      participationStatus
+      participationStatus: '거절'
+    };
+
+    try {
+      const res = await admitApplicants(data); // API 호출
+      if (res.status === 200) {
+        alert('거절되었습니다.');
+        isConfirmModal.value = true;
+        closeModal(); // 모달 닫기
+        applicants(); // 지원자 목록 업데이트
+      } else {
+        console.error('거절 실패', res);
+      }
+    } catch (error) {
+      console.error('지원자 거절 API 호출 에러', error);
+    }
+  }
+};
+
+//지원자 승인 Api
+const admit = async () => {
+  console.log('승인 시 지원정보', selectedApplicant.value);
+
+  if (selectedApplicant.value) {
+    const { boardId, userNickname, positionName, participationStatus } = selectedApplicant.value;
+    console.log('보드아이디,닉네임,포지션, 승인상태', boardId, userNickname, positionName, participationStatus);
+
+    const data = {
+      boardId,
+      userNickname,
+      positionName,
+      participationStatus: '승인'
     };
 
     try {

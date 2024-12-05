@@ -21,7 +21,7 @@ export const getApplicants = async (user_id) => {
   }
 };
 
-// 지원자 승인
+// 지원자 승인, 거절
 export const admitApplicants = async (data) => {
   try {
     const res = await axios.post(`${url}/admit`, data, {

@@ -95,7 +95,7 @@
                 </div>
                 <div class="flex flex-wrap">
                   <span v-for="(item, index) in selected" :key="index" class="mr-3 border border-gray-200 text-sm rounded-full px-2 py-1 mt-1">
-                    <p>{{ item.techStackName }}</p>
+                    <p class="cursor-pointer z-20" @click.stop="removeTechStack(index)">{{ item.techStackName }}</p>
                   </span>
                 </div>
               </div>
@@ -133,15 +133,30 @@
       </div>
       <!--서치 박스 끝-->
 
+      <!--선택한 필터 밖에 보이도록-->
+      <div class="flex flex-wrap mb-4">
+        <!-- 선택된 값 출력 예시 -->
+        <div v-if="selectedLocation" class="cursor-pointer border border-orange-300 bg-orange-300 text-sm mr-3 rounded-full px-2 py-1 mt-1 text-gray-700 hover:font-bold mb-2" @click="removeLocation">
+          {{ selectedLocation }}<span class="text-white font-bold ml-1 text-center m-auto">X</span>
+        </div>
+        <div v-if="selectedPosition" class="cursor-pointer border border-blue-200 bg-blue-200 text-sm mr-3 rounded-full px-2 py-1 mt-1 text-gray-700 hover:font-bold mb-2" @click="removePosition">
+          {{ selectedPosition ? selectedPosition.positionName : '' }}<span class="text-white font-bold ml-1 text-center m-auto">X</span>
+        </div>
+        <div v-for="(item, index) in selected" :key="index" class="cursor-pointer item-center justify-center text-center">
+          <!-- <img :src="item.imageUrl" class="w-10 h-12 object-contain transition-all duration-300 group-hover:w-12" /> -->
+          <div class="cursor-pointer border border-lime-300 bg-lime-300 text-sm mr-3 rounded-full px-2 py-1 mt-1 text-gray-700 hover:font-bold mb-2" @click="removeTechStack(index)">
+            {{ item.techStackName }}<span class="text-white font-bold ml-1 text-center m-auto">X</span>
+          </div>
+        </div>
+      </div>
+
+      <!--정렬-->
       <div class="flex mb-3 justify-end text-sm">
-        <button class="cursor-pointer hover:font-bold" 
-        @click="latestSort" :class="{ 'font-bold underline': activeButton === 'latest' }">최신순</button>
+        <button class="cursor-pointer hover:font-bold" @click="latestSort" :class="{ 'font-bold underline': activeButton === 'latest' }">최신순</button>
         <i>ㆍ</i>
-        <button class="cursor-pointer hover:font-bold" 
-        @click="famousSort" :class="{ 'font-bold underline': activeButton === 'famous' }">인기순</button>
+        <button class="cursor-pointer hover:font-bold" @click="famousSort" :class="{ 'font-bold underline': activeButton === 'famous' }">인기순</button>
         <i>ㆍ</i>
-        <button class="cursor-pointer hover:font-bold" 
-        @click="registerSort" :class="{ 'font-bold underline': activeButton === 'register' }">등록순</button>
+        <button class="cursor-pointer hover:font-bold" @click="registerSort" :class="{ 'font-bold underline': activeButton === 'register' }">등록순</button>
       </div>
 
       <!--📝프로젝트 글 박스-->
@@ -487,6 +502,22 @@ const handleClickOutside = (event) => {
   if (!event.target.closest('.relative')) {
     activeDropdown.value = ''; // 모든 드롭다운 닫기
   }
+};
+
+//필터초기화
+// 선택된 지역/구분을 삭제하는 메소드
+const removeLocation = () => {
+  selectedLocation.value = ''; // 선택된 지역/구분 초기화
+};
+
+// 선택된 포지션을 삭제하는 메소드
+const removePosition = () => {
+  selectedPosition.value = null; // 선택된 포지션 초기화
+};
+
+// 선택된 기술 스택을 삭제하는 메소드
+const removeTechStack = (index) => {
+  selected.value.splice(index, 1); // 해당 인덱스의 기술 스택 제거
 };
 
 watchEffect(() => {
