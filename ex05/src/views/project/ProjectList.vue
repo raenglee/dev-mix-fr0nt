@@ -76,7 +76,7 @@
 
               <div class="grid grid-cols-10 gap-x-3 gap-y-3 mt-3">
                 <div v-for="(option, index) in techOptions" :key="index" class="flex items-center m-auto">
-                  <label :class="{ 'text-gray-300 opacity-20': selected.includes(option) }" @click="toggleTechSelection(option)" class="cursor-pointer">
+                  <label :class="{ 'text-gray-300 opacity-20': selectedTech.includes(option) }" @click="toggleTechSelection(option)" class="cursor-pointer">
                     <!--마우스 오버 이름표시-->
                     <div class="relative group">
                       <img :src="option.imageUrl" class="w-10 h-12 object-contain transition-all duration-300 group-hover:w-12" />
@@ -94,7 +94,7 @@
                   <button @click="resetSelection" type="button" class="text-sm text-gray-400 px-1 mb-1 cursor-pointer hover:text-gray-300">초기화</button>
                 </div>
                 <div class="flex flex-wrap">
-                  <span v-for="(item, index) in selected" :key="index" class="mr-3 border border-gray-200 text-sm rounded-full px-2 py-1 mt-1">
+                  <span v-for="(item, index) in selectedTech" :key="index" class="mr-3 border border-gray-200 text-sm rounded-full px-2 py-1 mt-1">
                     <p class="cursor-pointer z-20" @click.stop="removeTechStack(index)">{{ item.techStackName }}</p>
                   </span>
                 </div>
@@ -142,7 +142,7 @@
         <div v-if="selectedPosition" class="cursor-pointer border border-blue-200 bg-blue-200 text-sm mr-3 rounded-full px-2 py-1 mt-1 text-gray-700 hover:font-bold mb-2" @click="removePosition">
           {{ selectedPosition ? selectedPosition.positionName : '' }}<span class="text-white font-bold ml-1 text-center m-auto">X</span>
         </div>
-        <div v-for="(item, index) in selected" :key="index" class="cursor-pointer item-center justify-center text-center">
+        <div v-for="(item, index) in selectedTech" :key="index" class="cursor-pointer item-center justify-center text-center">
           <!-- <img :src="item.imageUrl" class="w-10 h-12 object-contain transition-all duration-300 group-hover:w-12" /> -->
           <div class="cursor-pointer border border-lime-300 bg-lime-300 text-sm mr-3 rounded-full px-2 py-1 mt-1 text-gray-700 hover:font-bold mb-2" @click="removeTechStack(index)">
             {{ item.techStackName }}<span class="text-white font-bold ml-1 text-center m-auto">X</span>
@@ -152,11 +152,11 @@
 
       <!--정렬-->
       <div class="flex mb-3 justify-end text-sm">
-        <button class="cursor-pointer hover:font-bold" @click="latestSort" :class="{ 'font-bold underline': activeButton === 'latest' }">최신순</button>
+        <!-- <button class="cursor-pointer hover:font-bold" @click="latestSort" :class="{ 'font-bold underline': activeButton === 'latest' }">최신순</button> -->
         <i>ㆍ</i>
-        <button class="cursor-pointer hover:font-bold" @click="famousSort" :class="{ 'font-bold underline': activeButton === 'famous' }">인기순</button>
+        <!-- <button class="cursor-pointer hover:font-bold" @click="famousSort" :class="{ 'font-bold underline': activeButton === 'famous' }">인기순</button> -->
         <i>ㆍ</i>
-        <button class="cursor-pointer hover:font-bold" @click="registerSort" :class="{ 'font-bold underline': activeButton === 'register' }">등록순</button>
+        <!-- <button class="cursor-pointer hover:font-bold" @click="registerSort" :class="{ 'font-bold underline': activeButton === 'register' }">등록순</button> -->
       </div>
 
       <!--📝프로젝트 글 박스-->
@@ -250,7 +250,7 @@
 
 <script setup>
 import { ref, watchEffect } from 'vue';
-import { getLocation, getPositions, getTechstacks, listProject, scrapProject, totalPage } from '@/api/projectApi';
+import { getLocation, getPositions, getTechstacks, listProject, scrapProject, searchquery, totalPage } from '@/api/projectApi';
 import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import LoginModal from '@/views/Component/LoginModal.vue';
@@ -261,6 +261,11 @@ const onlyNeeded = ref(false);
 const arr = ref([]); // 게시물 배열
 const isModal = ref(false); // 로그인 모달 상태
 const useStore = useUserStore();
+
+// 모달 닫기 (배경 클릭 시)
+const closeModal = () => {
+  isModal.value = false;
+};
 
 //토탈 페이지 수
 const totalPages = ref(0);
@@ -302,7 +307,7 @@ const getProjects = async (num = 1) => {
       };
     });
 
-    applySort();
+    // applySort();
     // console.log('프로젝트 내용: ', arr.value);
   } catch (error) {
     console.error('프로젝트 가져오기 오류:', error);
@@ -352,57 +357,45 @@ const toggleBookmark = async (item) => {
 };
 
 // 정렬
-const activeButton = ref('latest');
+// const activeButton = ref('latest');
 
 // localStorage에서 상태읽기
-watchEffect(() => {
-  const savedButton = localStorage.getItem('activeButton');
-  if (savedButton) {
-    activeButton.value = savedButton;
-  }
-});
+// watchEffect(() => {
+//   const savedButton = localStorage.getItem('activeButton');
+//   if (savedButton) {
+//     activeButton.value = savedButton;
+//   }
+// });
 
 // 클릭된 버튼을 localStorage에 저장
-const setActive = (button) => {
-  activeButton.value = button;
-  localStorage.setItem('activeButton', button); // localStorage에 버튼 상태 저장
-};
+// const setActive = (button) => {
+//   activeButton.value = button;
+//   localStorage.setItem('activeButton', button); // localStorage에 버튼 상태 저장
+// };
 
-const latestSort = () => {
-  // arr.value.sort((a, b) => b.boardId - a.boardId);
-  setActive('latest');
-};
-const famousSort = () => {
-  // arr.value.sort((a, b) => b.viewCount - a.viewCount);
-  setActive('famous');
-};
-const registerSort = () => {
-  // arr.value.sort((a, b) => a.boardId - b.boardId);
-  setActive('register');
-};
+// const latestSort = () => {
+//   // arr.value.sort((a, b) => b.boardId - a.boardId);
+//   setActive('latest');
+// };
+// const famousSort = () => {
+//   // arr.value.sort((a, b) => b.viewCount - a.viewCount);
+//   setActive('famous');
+// };
+// const registerSort = () => {
+//   // arr.value.sort((a, b) => a.boardId - b.boardId);
+//   setActive('register');
+// };
 
 // 선택된 정렬을 배열에 적용
-const applySort = () => {
-  if (activeButton.value === 'latest') {
-    arr.value.sort((a, b) => b.boardId - a.boardId);
-  } else if (activeButton.value === 'famous') {
-    arr.value.sort((a, b) => b.viewCount - a.viewCount);
-  } else if (activeButton.value === 'register') {
-    arr.value.sort((a, b) => a.boardId - b.boardId);
-  }
-};
-
-// 페이지 이동 시 적용될 정렬을 보장하는 watch
-watchEffect(() => {
-  if (arr.value.length > 0) {
-    applySort();
-  }
-});
-
-// 모달 닫기 (배경 클릭 시)
-const closeModal = () => {
-  isModal.value = false;
-};
+// const applySort = () => {
+//   if (activeButton.value === 'latest') {
+//     arr.value.sort((a, b) => b.boardId - a.boardId);
+//   } else if (activeButton.value === 'famous') {
+//     arr.value.sort((a, b) => b.viewCount - a.viewCount);
+//   } else if (activeButton.value === 'register') {
+//     arr.value.sort((a, b) => a.boardId - b.boardId);
+//   }
+// };
 
 // 포지션 드롭다운
 const positionOptions = ref([]);
@@ -430,7 +423,7 @@ const selectPosition = (option) => {
 
 // 기술/언어 드롭다운
 const techOptions = ref([]);
-const selected = ref([]); // 다중 선택
+const selectedTech = ref([]); // 다중 선택
 
 // 기술/언어 데이터 가져오기
 const selelctTechstacks = async () => {
@@ -451,8 +444,9 @@ const selelctTechstacks = async () => {
   }
 };
 
+//기술 선택 초기화 버튼
 const resetSelection = () => {
-  selected.value = []; // 선택된 항목을 모두 해제
+  selectedTech.value = [];
 };
 
 // 지역/구분 드롭다운
@@ -475,6 +469,10 @@ const selectLocations = async () => {
 };
 
 const activeDropdown = ref(''); // 현재 활성화된 드롭다운
+// 드롭다운 토글
+const toggleDropdown = (dropdown) => {
+  activeDropdown.value = activeDropdown.value === dropdown ? '' : dropdown; // 드롭다운 열기/닫기
+};
 
 // 지역 선택
 const selectLocation = (option) => {
@@ -482,18 +480,13 @@ const selectLocation = (option) => {
   activeDropdown.value = ''; // 드롭다운 닫기
 };
 
-// 드롭다운 토글
-const toggleDropdown = (dropdown) => {
-  activeDropdown.value = activeDropdown.value === dropdown ? '' : dropdown; // 드롭다운 열기/닫기
-};
-
-//기술선택 토글?
+//기술선택 토글
 const toggleTechSelection = (option) => {
-  const index = selected.value.indexOf(option);
+  const index = selectedTech.value.indexOf(option);
   if (index === -1) {
-    selected.value.push(option);
+    selectedTech.value.push(option);
   } else {
-    selected.value.splice(index, 1);
+    selectedTech.value.splice(index, 1);
   }
 };
 
@@ -517,7 +510,33 @@ const removePosition = () => {
 
 // 선택된 기술 스택을 삭제하는 메소드
 const removeTechStack = (index) => {
-  selected.value.splice(index, 1); // 해당 인덱스의 기술 스택 제거
+  selectedTech.value.splice(index, 1); // 해당 인덱스의 기술 스택 제거
+};
+
+//쿼리dsl 검색필터
+const searchfilter = async () => {
+  console.log(selectLocation.value, selectedPosition.value, selectedTech.value);
+  router.push({
+    query: {
+      pageNumber: 1,
+      pageSize: 16,
+      location: selectedLocation.value,
+      positions: selectedPosition.value,
+      tech: selectedTech.value.join('/')
+    }
+  });
+
+  try {
+    const res = await searchquery();
+    console.log('검색필터 데이터 확인: ', res);
+    if (Array.isArray(res.data.result)) {
+      positionOptions.value = res.data.result;
+    } else {
+      console.error('검색필터 오류', res);
+    }
+  } catch (error) {
+    console.error('검색필터 실패:', error);
+  }
 };
 
 watchEffect(() => {
@@ -527,6 +546,7 @@ watchEffect(() => {
   selectPositions();
   selectLocations();
   getTotalPages();
+  searchfilter;
 });
 
 // onUnmounted(() => {

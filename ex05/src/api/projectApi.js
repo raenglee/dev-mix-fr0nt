@@ -246,3 +246,21 @@ export const scrapProjectlist = async (board_id, data) => {
     return e;
   }
 };
+
+// 검색엔진
+export const searchquery = async(Parameters) => {
+  try {
+    console.log('쿼리dsl api호출', Parameters)
+    const res = await axios.get(`${url}/querydsl`, {
+      headers: {
+        params: Parameters,
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return res;
+  
+  } catch (e) {
+   console.log('쿼리dsl 에러 발생', e);
+   return e;
+    }
+};

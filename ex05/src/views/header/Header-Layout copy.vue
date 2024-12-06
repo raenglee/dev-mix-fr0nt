@@ -11,15 +11,14 @@
         <template v-if="useStore.loginCheck">
           <div class="flex space-x-1">
             <div class="relative" @mouseenter="openAlarmDropdown" @mouseleave="closeAlarmDropdown">
-              <!-- <font-awesome-icon
+              <font-awesome-icon
                 icon="bell"
                 class="h-6 w-5 cursor-pointer p-2"
                 :class="{
                   'text-[#d10000] bg-white': isAlarmDropdownOpen,
                   'text-white hover:bg-[#ffffff] hover:text-[#d10000]': !isAlarmDropdownOpen
                 }"
-              /> -->
-              <p>알람</p>
+              />
               <!-- 알람 드롭다운 메뉴 -->
               <div v-if="isAlarmDropdownOpen" class="absolute right-0 top-10 w-max min-w-[150px] max-w-[400px] bg-white rounded-m z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]">
                 <ul class="text-sm">
@@ -35,9 +34,43 @@
                 </ul>
               </div>
             </div>
+            <!-- <font-awesome-icon icon="pen" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" /> -->
+            <!-- <nav class="flex gap-2">
+              <RouterLink
+                to="/projectcreate"
+                class="whitespace-nowrap m-auto px-3 py-1 border border-white rounded-md shadow-lg bg-white text-[#d10000] hover:text-[#d10000] hover:font-bold transition duration-100"
+              >
+                글쓰기
+              </RouterLink>
+              <RouterLink
+                to="/projectapplicants"
+                class="whitespace-nowrap m-auto px-3 py-1 border border-white rounded-md shadow-lg bg-white text-[#d10000] hover:text-[#d10000] hover:font-bold transition duration-100"
+                >지원자 확인</RouterLink
+              >
+              <RouterLink
+                to="/mypage/myprofile"
+                class="whitespace-nowrap m-auto px-3 py-1 border border-white rounded-md shadow-lg bg-white text-[#d10000] hover:text-[#d10000] hover:font-bold transition duration-100"
+              >
+                마이 페이지
+              </RouterLink>
+              <button
+                @click="logout"
+                class="whitespace-nowrap m-auto px-3 py-1 border border-white rounded-md shadow-lg bg-white text-[#d10000] hover:text-[#d10000] hover:font-bold transition duration-100"
+              >
+                로그아웃
+              </button>
+            </nav> -->
 
             <RouterLink to="/projectcreate" class="whitespace-nowrap m-auto px-3 py-1 text-white hover:font-bold"> 글쓰기 </RouterLink>
             <div class="relative" @mouseenter="openPeopleDropdown" @mouseleave="closePeopleDropdown">
+              <!-- <font-awesome-icon
+                icon="user"
+                class="h-6 w-5 cursor-pointer p-2"
+                :class="{
+                  'text-[#d10000] bg-white': isPeopleDropdownOpen,
+                  'text-white hover:bg-[#ffffff] hover:text-[#d10000]': !isPeopleDropdownOpen
+                }"
+              /> -->
               <div class="whitespace-nowrap m-auto px-3 py-1 text-white hover:font-bold">내정보</div>
               <div v-if="isPeopleDropdownOpen" class="absolute right-0 top-10 w-max min-w-[150px] max-w-[400px] bg-white rounded-m z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]">
                 <ul class="text-sm">
