@@ -53,7 +53,7 @@
               </transition>
             </div>
 
-            <RouterLink to="/projectcreate" class="px-3 py-1 whitespace-nowrap hover:font-bold transition duration-100 cursor-pointer"> 글쓰기 </RouterLink>
+            <RouterLink to="/projectcreate" class="px-3 py-1 whitespace-nowrap rounded-md font-bold cursor-pointer text-white"> 글쓰기 </RouterLink>
             <div class="relative" @mouseenter="openPeopleDropdown" @mouseleave="closePeopleDropdown">
               <p
                 class="px-3 py-1 whitespace-nowrap rounded-md font-bold cursor-pointer"
