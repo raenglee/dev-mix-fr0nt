@@ -9,7 +9,7 @@
 
         <!--🌐로그인 한 후 아이콘-->
         <template v-if="useStore.loginCheck">
-          <div class="flex space-x-1">
+          <div class="flex flex-wrap space-x-1">
             <div class="relative" @mouseenter="openAlarmDropdown" @mouseleave="closeAlarmDropdown">
               <!-- <font-awesome-icon
                 icon="bell"
@@ -19,42 +19,76 @@
                   'text-white hover:bg-[#ffffff] hover:text-[#d10000]': !isAlarmDropdownOpen
                 }"
               /> -->
-              <p>알람</p>
+              <p
+                class="px-3 py-1 whitespace-nowrap rounded-md font-bold cursor-pointer"
+                @mouseenter="isAlarmHovered = true"
+                @mouseleave="isAlarmHovered = false"
+                :class="{
+                  'text-[#d10000] bg-red-50': isAlarmHovered,
+                  'text-white': !isAlarmHovered
+                }"
+              >
+                알람
+              </p>
               <!-- 알람 드롭다운 메뉴 -->
-              <div v-if="isAlarmDropdownOpen" class="absolute right-0 top-10 w-max min-w-[150px] max-w-[400px] bg-white rounded-m z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]">
-                <ul class="text-sm">
-                  <li>
-                    <p class="px-4 py-2">지원자 신청이 도착하였습니다.</p>
-                  </li>
-                  <li>
-                    <p class="px-4 py-2">[....]에 댓글이 작성되었습니다.</p>
-                  </li>
-                  <li>
-                    <p class="px-4 py-2">지원자 신청이 도착하였습니다.</p>
-                  </li>
-                </ul>
-              </div>
+              <transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+                <div
+                  v-if="isAlarmDropdownOpen"
+                  @mouseenter="isAlarmHovered = true"
+                  @mouseleave="isAlarmHovered = false"
+                  class="absolute right-0 top-6 w-max min-w-[150px] max-w-[400px] bg-red-50 rounded-md z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]"
+                >
+                  <ul class="text-sm mt-2">
+                    <li>
+                      <p class="px-4 py-2">지원자 신청이 도착하였습니다.</p>
+                    </li>
+                    <li>
+                      <p class="px-4 py-2">[....]에 댓글이 작성되었습니다.</p>
+                    </li>
+                    <li>
+                      <p class="px-4 py-2">지원자 신청이 도착하였습니다.</p>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
             </div>
 
-            <RouterLink to="/projectcreate" class="whitespace-nowrap m-auto px-3 py-1 text-white hover:font-bold"> 글쓰기 </RouterLink>
+            <RouterLink to="/projectcreate" class="px-3 py-1 whitespace-nowrap hover:font-bold transition duration-100 cursor-pointer"> 글쓰기 </RouterLink>
             <div class="relative" @mouseenter="openPeopleDropdown" @mouseleave="closePeopleDropdown">
-              <div class="whitespace-nowrap m-auto px-3 py-1 text-white hover:font-bold">내정보</div>
-              <div v-if="isPeopleDropdownOpen" class="absolute right-0 top-10 w-max min-w-[150px] max-w-[400px] bg-white rounded-m z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]">
-                <ul class="text-sm">
-                  <li>
-                    <p class="px-4 py-2 font-bold text-lg">반갑습니다 {{ useStore.nickname }} 님</p>
-                  </li>
-                  <li>
-                    <RouterLink to="/mypage/myprofile" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold"> 마이 페이지 </RouterLink>
-                  </li>
-                  <li>
-                    <RouterLink to="/projectapplicants" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold">지원자 확인</RouterLink>
-                  </li>
-                  <li>
-                    <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left hover:font-bold">로그아웃</button>
-                  </li>
-                </ul>
-              </div>
+              <p
+                class="px-3 py-1 whitespace-nowrap rounded-md font-bold cursor-pointer"
+                @mouseenter="isPeopleHovered = true"
+                @mouseleave="isPeopleHovered = false"
+                :class="{
+                  'text-[#d10000] bg-red-50': isPeopleHovered,
+                  'text-white': !isPeopleHovered
+                }"
+              >
+                내정보
+              </p>
+              <transition @before-enter="beforeEnter" @enter="enter" @leave="leave">
+                <div
+                  v-if="isPeopleDropdownOpen"
+                  @mouseenter="isPeopleHovered = true"
+                  @mouseleave="isPeopleHovered = false"
+                  class="absolute right-0 top-6 w-max min-w-[150px] max-w-[400px] bg-red-50 rounded-md z-10 shadow-[0_4px_3px_0_rgba(0,0,0,0.1)]"
+                >
+                  <ul class="text-sm">
+                    <li>
+                      <p class="px-4 py-2 font-bold text-lg">반갑습니다 {{ useStore.nickname }} 님</p>
+                    </li>
+                    <li>
+                      <RouterLink to="/mypage/myprofile" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold"> 마이 페이지 </RouterLink>
+                    </li>
+                    <li>
+                      <RouterLink to="/projectapplicants" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020] hover:font-bold">지원자 확인</RouterLink>
+                    </li>
+                    <li>
+                      <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left hover:font-bold">로그아웃</button>
+                    </li>
+                  </ul>
+                </div>
+              </transition>
             </div>
           </div>
         </template>
@@ -132,8 +166,10 @@ watchEffect(async () => {
 
 // 드롭다운 상태 관리
 const isPeopleDropdownOpen = ref(false);
+const isPeopleHovered = ref(false);
 const isAlarmDropdownOpen = ref(false);
-const isapplyDropdownOpen = ref(false);
+const isAlarmHovered = ref(false);
+// const isapplyDropdownOpen = ref(false);
 
 // 마이페이지 드롭다운 열기
 const openPeopleDropdown = () => {
@@ -167,6 +203,31 @@ const handleClickOutside = (event) => {
   if (!event.target.closest('.relative')) {
     isPeopleDropdownOpen.value = false;
   }
+};
+
+//드롭다운 애니메이션
+// 드롭다운 열리기 전
+const beforeEnter = (el) => {
+  el.style.transform = 'scaleY(0)';
+  el.style.opacity = '0';
+  el.style.transformOrigin = 'top';
+};
+
+// 드롭다운 열리는 동안
+const enter = (el, done) => {
+  el.offsetHeight;
+  el.style.transition = 'transform 0.3s ease-out, opacity 0.2s ease-out';
+  el.style.transform = 'scaleY(1)';
+  el.style.opacity = '1';
+  done();
+};
+
+// 드롭다운 닫히는 동안
+const leave = (el, done) => {
+  el.style.transition = 'transform 0.3s ease-in, opacity 0.2s ease-in';
+  el.style.transform = 'scaleY(0)';
+  el.style.opacity = '0';
+  done();
 };
 
 watchEffect(() => {

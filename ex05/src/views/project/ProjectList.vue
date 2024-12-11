@@ -7,8 +7,9 @@
       <h1 class="text-4xl font-bold text-center animate-slideUp py-10 text-gray-800">현재 모집 중인 프로젝트를 확인해보세요!</h1>
 
       <!--🔍서치 박스-->
-      <div class="flex items-center justify-between mb-3 flex-wrap w-full">
-        <div class="flex gap-4">
+
+      <div class="flex items-center justify-between flex-wrap w-full">
+        <div class="flex flex-wrap gap-4 mb-3">
           <div class="flex">
             <!-- 지역/구분 드롭다운 -->
             <div class="relative">
@@ -27,7 +28,14 @@
               <div v-if="activeDropdown === 'location'" class="absolute bg-white border border-gray rounded-md shadow-lg z-10 w-64 p-4">
                 <div class="flex flex-col">
                   <div v-for="(option, index) in locationOptions" :key="index" class="flex items-center p-1 hover:bg-gray-200">
-                    <label :class="{ 'text-gray-400': selectedLocation === option }" @click="selectLocation(option)" class="cursor-pointer truncate w-full">
+                    <label
+                      :class="{ 'text-gray-400': selectedLocation === option }"
+                      @click="
+                        selectLocation(option);
+                        searchfilter();
+                      "
+                      class="cursor-pointer truncate w-full"
+                    >
                       {{ option }}
                     </label>
                   </div>
@@ -52,7 +60,14 @@
             <div v-if="activeDropdown === 'position'" class="absolute bg-white border border-gray rounded-md shadow-lg z-10 w-64 p-4">
               <div class="flex flex-col">
                 <div v-for="(option, index) in positionOptions" :key="index" class="flex items-center p-1 hover:bg-gray-200">
-                  <label :class="{ 'text-gray-400': selectedPosition === option }" @click="selectPosition(option)" class="cursor-pointer truncate w-full">
+                  <label
+                    :class="{ 'text-gray-400': selectedPosition === option }"
+                    @click="
+                      selectPosition(option);
+                      searchfilter();
+                    "
+                    class="cursor-pointer truncate w-full"
+                  >
                     {{ option.positionName }}
                   </label>
                 </div>
@@ -76,7 +91,14 @@
 
               <div class="grid grid-cols-10 gap-x-3 gap-y-3 mt-3">
                 <div v-for="(option, index) in techOptions" :key="index" class="flex items-center m-auto">
-                  <label :class="{ 'text-gray-300 opacity-20': selectedTech.includes(option) }" @click="toggleTechSelection(option)" class="cursor-pointer">
+                  <label
+                    :class="{ 'text-gray-300 opacity-20': selectedTech.includes(option) }"
+                    @click="
+                      toggleTechSelection(option);
+                      searchfilter();
+                    "
+                    class="cursor-pointer"
+                  >
                     <!--마우스 오버 이름표시-->
                     <div class="relative group">
                       <img :src="option.imageUrl" class="w-10 h-12 object-contain transition-all duration-300 group-hover:w-12" />
@@ -119,7 +141,10 @@
               'bg-[#d10000] text-white': onlyNeeded,
               'bg-white text-black': !onlyNeeded
             }"
-            @click="clickneededonly"
+            @click="
+              clickneededonly;
+              searchfilter();
+            "
           >
             모집중만 보기
           </button>
@@ -184,7 +209,7 @@
               </div> -->
               <!--최대 기술 4개까지만 보이도록-->
               <div class="py-2 gap-3 flex flex-wrap">
-                <div v-for="(tech, index) in item.techStacks.slice(0, 4)" :key="tech.techStackName" class="inline-flex items-center space-x-2">
+                <div v-for="(tech, index) in item.techStacks.slice(0, 4)" :key="tech.techStackId" class="inline-flex items-center space-x-2">
                   <img :src="tech.techStackImageUrl" class="w-10 h-10" />
                 </div>
                 <!-- 기술 너무많으면 말줄임표 사용 -->
@@ -254,6 +279,7 @@ import { getLocation, getPositions, getTechstacks, listProject, scrapProject, se
 import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import LoginModal from '@/views/Component/LoginModal.vue';
+import { isBoolean } from 'lodash';
 
 const searchText = ref('');
 const onlyBookmarked = ref(false);
@@ -513,31 +539,66 @@ const removeTechStack = (index) => {
   selectedTech.value.splice(index, 1); // 해당 인덱스의 기술 스택 제거
 };
 
-//쿼리dsl 검색필터
+//검색필터
 const searchfilter = async () => {
-  console.log(selectLocation.value, selectedPosition.value, selectedTech.value);
-  router.push({
-    query: {
-      pageNumber: 1,
-      pageSize: 16,
-      location: selectedLocation.value,
-      positions: selectedPosition.value,
-      tech: selectedTech.value.join('/')
-    }
-  });
-
   try {
-    const res = await searchquery();
-    console.log('검색필터 데이터 확인: ', res);
-    if (Array.isArray(res.data.result)) {
-      positionOptions.value = res.data.result;
+    const tech = selectedTech.value.map((item) => item.techStackName).join(', ');
+    // const recruitmentStatus: ref('');
+    // const position = selectedPosition.value ? selectedPosition.value.positionName : ''; // 기본값을 빈 문자열로 설정
+
+    router.push({
+      query: {
+        location: selectedLocation.value,
+        positions: selectedPosition.value.positionName,
+        // positions:position,
+        tech: tech,
+        // bookmarked: false,
+        recruitmentStatus: onlyNeeded.value
+      }
+    });
+    const res = await searchquery({
+      // pageNumber:1,
+      // pageSize:16,
+      location: selectedLocation.value,
+      positions: selectedPosition.value.positionName,
+      // positions:position,
+      tech: tech,
+
+      // bookmarked: item.isBookmarked
+      recruitmentStatus: onlyNeeded.value
+    });
+
+    console.log(onlyNeeded.value);
+
+    console.log('선택된 포지션', selectedPosition.value.positionName, '선택된 기술', tech);
+
+    if (res.status === 200) {
+      if (Array.isArray(res.data.result)) {
+        arr.value.length = 0; // 기존 데이터 비우기
+        arr.value.push(...res.data.result); // 새로운 데이터 추가
+      } else {
+        console.error('배열이아님:', res.data);
+      }
     } else {
       console.error('검색필터 오류', res);
     }
   } catch (error) {
-    console.error('검색필터 실패:', error);
+    const errorMessage = error.response ? error.response : error.message || '알 수 없는 오류';
+    console.error('검색필터 실패:', errorMessage);
   }
 };
+
+// try {
+//     const res = await scrapProject(item.boardId, { isBookmarked: newBookmarkState });
+//     if (res.status === 200) {
+//       item.isBookmarked = newBookmarkState;
+//       console.log('북마크 상태 변경 완료:', item.isBookmarked);
+//     } else {
+//       console.error('북마크 상태 변경 실패:', res);
+//     }
+//   } catch (error) {
+//     console.error('북마크 오류:', error);
+//   }
 
 watchEffect(() => {
   window.addEventListener('click', handleClickOutside);
