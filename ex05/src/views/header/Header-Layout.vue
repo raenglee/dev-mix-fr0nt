@@ -100,7 +100,7 @@
               <!-- <img src="/img/person.png" class="h-6 w-5" /> -->
               <!-- <font-awesome-icon icon="user" class="h-6 w-5 cursor-pointer text-white" /> -->
               <!-- <font-awesome-icon icon="user" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" /> -->
-              <p class="px-3 py-1 border border-white rounded-md shadow-lg bg-white text-[#d10000] hover:text-[#d10000] hover:font-bold transition duration-100">로그인</p>
+              <p class="px-3 py-1 whitespace-nowrap rounded-md font-bold cursor-pointer text-white">로그인</p>
             </button>
           </div>
         </template>

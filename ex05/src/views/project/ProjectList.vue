@@ -279,7 +279,6 @@ import { getLocation, getPositions, getTechstacks, listProject, scrapProject, se
 import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import LoginModal from '@/views/Component/LoginModal.vue';
-import { isBoolean } from 'lodash';
 
 const searchText = ref('');
 const onlyBookmarked = ref(false);
@@ -552,8 +551,8 @@ const searchfilter = async () => {
         positions: selectedPosition.value.positionName,
         // positions:position,
         tech: tech,
-        // bookmarked: false,
-        recruitmentStatus: onlyNeeded.value
+        // bookmarked: item.isBookmarked,
+        // recruitmentStatus: onlyNeeded.value
       }
     });
     const res = await searchquery({
@@ -565,10 +564,10 @@ const searchfilter = async () => {
       tech: tech,
 
       // bookmarked: item.isBookmarked
-      recruitmentStatus: onlyNeeded.value
+      // recruitmentStatus: onlyNeeded.value
     });
 
-    console.log(onlyNeeded.value);
+    // console.log(onlyNeeded.value);
 
     console.log('선택된 포지션', selectedPosition.value.positionName, '선택된 기술', tech);
 
